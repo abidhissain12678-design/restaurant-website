@@ -27,6 +27,35 @@ function RestaurantWebsite() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [foodItems, setFoodItems] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
+  const [userOrders, setUserOrders] = useState([]);
+
+  // Load orders from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem("userOrders");
+    if (stored) {
+      try {
+        setUserOrders(JSON.parse(stored));
+      } catch (e) {
+        console.error("Failed to parse stored orders", e);
+      }
+    }
+  }, []);
+
+  const addOrderToHistory = (orderId, customerName, phone, address, items, total) => {
+    const newOrder = {
+      id: orderId,
+      customer_name: customerName,
+      phone,
+      address,
+      items,
+      total,
+      status: "Pending",
+      created_at: new Date().toISOString(),
+    };
+    const updated = [newOrder, ...userOrders];
+    setUserOrders(updated);
+    localStorage.setItem("userOrders", JSON.stringify(updated));
+  };
 
   const loadProducts = async () => {
     setLoadingProducts(true);
@@ -94,7 +123,7 @@ function RestaurantWebsite() {
 
   const removeItem = (id) => setCart((prev) => prev.filter((item) => item.id !== id));
 
-  const navItems = ["Home", "Menu", "Categories", "Track Order", "About", "Contact", "FAQ"];
+  const navItems = ["Home", "Menu", "Categories", "My Orders", "Track Order", "About", "Contact", "FAQ"];
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
   const openQuickView = (item) => setSelectedItem(item);
@@ -149,7 +178,8 @@ function RestaurantWebsite() {
           />
         )}
         {page === "Categories" && <CategoriesPage setPage={setPage} setSelectedCategory={setSelectedCategory} />}
-        {page === "Checkout" && <CheckoutPage total={total} cart={cart} setPage={setPage} clearCart={() => setCart([])} />}
+        {page === "Checkout" && <CheckoutPage total={total} cart={cart} setPage={setPage} clearCart={() => setCart([])} addOrderToHistory={addOrderToHistory} />}
+        {page === "My Orders" && <MyOrdersPage userOrders={userOrders} setPage={setPage} setTrackingId={setTrackingId} />}
         {page === "Track Order" && <TrackingPage trackingId={trackingId} setTrackingId={setTrackingId} />}
         {page === "About" && <AboutPage />}
         {page === "Contact" && <ContactPage />}
@@ -592,7 +622,7 @@ function CartDrawer({ open, onClose, cart, updateQty, removeItem, subtotal, deli
   );
 }
 
-function CheckoutPage({ total, cart, setPage, clearCart }) {
+function CheckoutPage({ total, cart, setPage, clearCart, addOrderToHistory }) {
   const [customerName, setCustomerName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
@@ -637,6 +667,7 @@ function CheckoutPage({ total, cart, setPage, clearCart }) {
     }
 
     setOrderId(generatedId);
+    addOrderToHistory(generatedId, customerName, phone, address, cart, total);
     clearCart();
     setPlaced(true);
   };
@@ -936,6 +967,72 @@ function FAQPage() {
           >
             <h3 className="font-black text-white">{q}</h3>
             <p className="mt-3 text-slate-300">{a}</p>
+          </motion.div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function MyOrdersPage({ userOrders, setPage, setTrackingId }) {
+  if (userOrders.length === 0) {
+    return (
+      <section className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <h1 className="text-5xl font-black text-white">My Orders</h1>
+          <p className="mt-2 text-slate-400">Track and manage all your orders</p>
+        </motion.div>
+
+        <div className="mt-12 rounded-[2rem] border border-slate-800 bg-slate-900 p-12 text-center">
+          <ShoppingCart className="mx-auto mb-4 text-slate-500" size={48} />
+          <h2 className="text-2xl font-bold text-slate-300">No orders yet</h2>
+          <p className="mt-2 text-slate-400">Start by ordering your favorite dishes!</p>
+          <Button onClick={() => setPage("Menu")} className="mt-6 rounded-full bg-orange-500 px-8 py-3 text-white hover:bg-orange-400">
+            Browse Menu
+          </Button>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+        <h1 className="text-5xl font-black text-white">My Orders</h1>
+        <p className="mt-2 text-slate-400">You have {userOrders.length} order{userOrders.length !== 1 ? 's' : ''}</p>
+      </motion.div>
+
+      <div className="mt-8 space-y-4">
+        {userOrders.map((order, idx) => (
+          <motion.div
+            key={order.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: idx * 0.05 }}
+            className="rounded-[2rem] border border-slate-800 bg-slate-900 p-6 transition hover:border-orange-500/50"
+          >
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <h3 className="text-xl font-black text-white">Order #{order.id}</h3>
+                  <span className={`rounded-full px-3 py-1 text-xs font-bold ${order.status === "Delivered" ? "bg-green-500/20 text-green-300" : order.status === "Cancelled" ? "bg-red-500/20 text-red-300" : "bg-orange-500/20 text-orange-300"}`}>
+                    {order.status}
+                  </span>
+                </div>
+                <p className="mt-2 text-sm text-slate-400">{order.customer_name} • {order.phone}</p>
+                <p className="mt-1 text-sm text-slate-500">{new Date(order.created_at).toLocaleDateString()}</p>
+                <p className="mt-2 text-sm text-slate-300">{order.items.length} item{order.items.length !== 1 ? 's' : ''} • <span className="font-bold text-orange-400">Rs {order.total}</span></p>
+              </div>
+              <Button
+                onClick={() => {
+                  setTrackingId(order.id);
+                  setPage("Track Order");
+                }}
+                className="rounded-full bg-orange-500 px-6 py-3 text-sm text-white hover:bg-orange-400"
+              >
+                <PackageCheck size={16} className="mr-2" /> Track
+              </Button>
+            </div>
           </motion.div>
         ))}
       </div>
