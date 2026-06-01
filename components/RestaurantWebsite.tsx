@@ -5,6 +5,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Award, Bike, ChefHat, Clock, Heart, Image, Mail, MessageCircle, Minus, Plus, Search, ShoppingCart, Star, Trash2, Phone, PackageCheck, MapPin } from "lucide-react";
 import { Button, Card, CardContent } from "@/components/ui";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import { categories } from "@/data/foodData";
 import { supabase } from "@/lib/supabase";
 
@@ -151,6 +152,7 @@ function RestaurantWebsite() {
           </nav>
 
           <div className="flex items-center gap-3">
+            <PWAInstallPrompt />
             <Button onClick={openCart} className="rounded-full bg-orange-500 px-5 py-3 text-sm text-white shadow-lg shadow-orange-500/20 hover:bg-orange-400">
               <ShoppingCart size={18} /> Cart {cartCount > 0 && <span className="ml-2 rounded-full bg-slate-950 px-3 py-1 text-xs font-bold text-white">{cartCount}</span>}
             </Button>
