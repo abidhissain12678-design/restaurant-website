@@ -1161,11 +1161,13 @@ function QuickViewModal({ item, onClose, addToCart }) {
   );
 }
 
-function MobileNav({ navItems, page, setPage }) {
+function MobileNav({ page, setPage }) {
+  const mobileItems = ["Home", "Menu", "Categories", "Track Order", "My Orders", "Contact", "FAQ"];
+
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-800 bg-slate-950 px-4 py-3 md:hidden">
       <div className="flex gap-2 overflow-x-auto">
-        {navItems.map((item) => (
+        {mobileItems.map((item) => (
           <button
             key={item}
             onClick={() => setPage(item)}
