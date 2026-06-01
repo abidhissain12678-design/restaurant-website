@@ -159,7 +159,7 @@ function RestaurantWebsite() {
       </header>
 
       <main className="relative overflow-hidden">
-        {page === "Home" && <HomePage setPage={setPage} addToCart={addToCart} foodItems={foodItems} loadingProducts={loadingProducts} />}
+        {page === "Home" && <HomePage setPage={setPage} addToCart={addToCart} openCart={openCart} foodItems={foodItems} loadingProducts={loadingProducts} />}
         {page === "Menu" && (
           <MenuPage
             search={search}
@@ -206,7 +206,7 @@ function RestaurantWebsite() {
   );
 }
 
-function HomePage({ setPage, addToCart, foodItems = [], loadingProducts = false }) {
+function HomePage({ setPage, addToCart, openCart, foodItems = [], loadingProducts = false }) {
   const popular = foodItems.filter((item) => item.popular).slice(0, 4);
 
   if (loadingProducts && foodItems.length === 0) {
@@ -254,7 +254,9 @@ function HomePage({ setPage, addToCart, foodItems = [], loadingProducts = false 
           <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }} className="relative">
             <div className="absolute -left-10 top-12 h-72 w-72 rounded-full bg-orange-500/10 blur-3xl" />
             <div className="overflow-hidden rounded-[3rem] border border-white/10 bg-slate-950/80 shadow-2xl shadow-orange-500/10">
-              <img className="w-full object-cover aspect-[11/10]" src="https://scontent.flhe38-1.fna.fbcdn.net/v/t39.30808-6/485727887_1040099368139433_718369802226856397_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGsSblrryOLZylT-NFd21nf6YFWC-tGBCLpgVYL60YEIks3yLpUEVsR6VMlFQFL25tSwagr073U6zFsQ9LDx6Qj&_nc_ohc=t03ygRW-Jx8Q7kNvwFLggxp&_nc_oc=AdowcJykFC--KLSIhnKGfoF-p1HLhqObJ9V5qlL2l45uIrSrxm2enm_qQ9MmxBGLnic&_nc_zt=23&_nc_ht=scontent.flhe38-1.fna&_nc_gid=wUj6RXla4zFW6KxXJX7jhQ&_nc_ss=7b2a8&oh=00_Af_ciysdk0bkbr9BMe8OBBJ_5ox62zXeAOtcWc518fcT5A&oe=6A23A8DE" alt="Hero food" />
+              <div className="aspect-[11/10] w-full overflow-hidden">
+                <img className="h-full w-full object-cover" src="https://scontent.flhe38-1.fna.fbcdn.net/v/t39.30808-6/485727887_1040099368139433_718369802226856397_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGsSblrryOLZylT-NFd21nf6YFWC-tGBCLpgVYL60YEIks3yLpUEVsR6VMlFQFL25tSwagr073U6zFsQ9LDx6Qj&_nc_ohc=t03ygRW-Jx8Q7kNvwFLggxp&_nc_oc=AdowcJykFC--KLSIhnKGfoF-p1HLhqObJ9V5qlL2l45uIrSrxm2enm_qQ9MmxBGLnic&_nc_zt=23&_nc_ht=scontent.flhe38-1.fna&_nc_gid=wUj6RXla4zFW6KxXJX7jhQ&_nc_ss=7b2a8&oh=00_Af_ciysdk0bkbr9BMe8OBBJ_5ox62zXeAOtcWc518fcT5A&oe=6A23A8DE" alt="Hero food" />
+              </div>
               <div className="bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent px-8 py-8 text-white backdrop-blur-xl">
                 <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-4">
                   <div>
@@ -262,6 +264,10 @@ function HomePage({ setPage, addToCart, foodItems = [], loadingProducts = false 
                     <h2 className="mt-2 text-2xl font-black">SpiceBite family platter</h2>
                   </div>
                   <span className="rounded-full bg-orange-500 px-4 py-2 text-sm font-black">Rs 1,750</span>
+                </div>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <Button onClick={() => setPage("Menu")} className="rounded-full bg-orange-500 px-5 py-3 text-sm text-white hover:bg-orange-400">Order now</Button>
+                  <Button onClick={openCart} variant="outline" className="rounded-full border border-slate-700 bg-slate-950/70 px-5 py-3 text-sm text-slate-100 hover:border-orange-500 hover:text-white">View Cart</Button>
                 </div>
                 <div className="mt-6 grid grid-cols-3 gap-4 text-sm text-slate-200">
                   <div className="rounded-3xl bg-white/5 p-4 text-center">
@@ -428,7 +434,9 @@ function MenuPage({ search, setSearch, selectedCategory, setSelectedCategory, it
                   <motion.div key={item.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} whileHover={{ y: -6 }} className="">
                     <Card className="overflow-hidden rounded-[1.25rem] border border-slate-800 bg-slate-950 text-white shadow transition-transform hover:scale-[1.01] hover:shadow-2xl">
                       <div className="relative overflow-hidden bg-slate-900">
-                        <img src={item.image} alt={item.name} className="h-44 w-full object-cover transition duration-500" />
+                        <div className="aspect-[4/3] w-full overflow-hidden">
+                          <img src={item.image} alt={item.name} className="h-full w-full object-cover transition duration-500" />
+                        </div>
                         {item.popular && <div className="absolute right-3 top-3 rounded-full bg-orange-500 px-3 py-1 text-xs font-bold text-white">Popular</div>}
                       </div>
                       <CardContent className="flex h-[220px] flex-col p-5">
