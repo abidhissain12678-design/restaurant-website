@@ -135,7 +135,7 @@ function RestaurantWebsite() {
       <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/95 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 lg:px-6">
           <button onClick={() => setPage("Home")} className="flex items-center gap-3 text-xl font-black tracking-tight text-white">
-            <span className="grid h-12 w-12 place-items-center rounded-3xl bg-gradient-to-br from-orange-500 to-rose-500 text-white shadow-lg"><ChefHat size={24} /></span>
+            <img src="https://scontent.flhe38-1.fna.fbcdn.net/v/t39.30808-6/299825356_429330659216310_8922120631896477365_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHW8Hp33TSyrEAtJgbytZYUjJoZoxSqmOyMmhmjFKqY7DuBpf-ey-DBdSejrmvnv3wJdNP4-Q2JwnVMnv1yiQkR&_nc_ohc=w-OauadJs4YQ7kNvwFQEoUt&_nc_oc=AdqxQt_w5H-yOMW0DNri4DuEWR_FAUHv16sygi4mUSwbZNtVTnf6-Hrs81A7rGwl6Lg&_nc_zt=23&_nc_ht=scontent.flhe38-1.fna&_nc_gid=u9Lr_deTDW4pNZ6LZqd6yQ&_nc_ss=7b2a8&oh=00_Af9ZMUWdU9XlZrH_WbXCStkQozGFbnCgBYe8ZRPuSk5Rnw&oe=6A23CB2E" alt="Flafe Logo" className="h-12 w-12 rounded-3xl object-cover shadow-lg" />
             <div className="text-left text-sm leading-tight">
               <div className="font-black">Flafe</div>
               <div className="text-slate-400">فلافے</div>
