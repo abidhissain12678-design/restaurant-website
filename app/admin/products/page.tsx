@@ -9,6 +9,8 @@ const initialForm = {
   name: "",
   category: "Pizza",
   price: "",
+  cost_price: "",
+  stock: "",
   image: "",
   description: "",
   rating: "4.5",
@@ -51,6 +53,8 @@ export default function AdminProductsPage() {
       name: product.name || "",
       category: product.category || "Pizza",
       price: String(product.price || ""),
+      cost_price: String(product.cost_price || ""),
+      stock: String(product.stock || ""),
       image: product.image || "",
       description: product.description || "",
       rating: String(product.rating || "4.5"),
@@ -67,6 +71,9 @@ export default function AdminProductsPage() {
       name: form.name,
       category: form.category,
       price: Number(form.price),
+      cost_price: Number(form.cost_price),
+      stock: Number(form.stock),
+      profit: Number(form.price) - Number(form.cost_price),
       image: form.image,
       description: form.description,
       rating: Number(form.rating),
@@ -109,6 +116,8 @@ export default function AdminProductsPage() {
             <input required value={form.name} onChange={(e) => handleChange("name", e.target.value)} placeholder="Name" className="rounded-3xl border border-slate-700 bg-slate-950 px-5 py-4 text-white" />
             <input required value={form.category} onChange={(e) => handleChange("category", e.target.value)} placeholder="Category" className="rounded-3xl border border-slate-700 bg-slate-950 px-5 py-4 text-white" />
             <input required value={form.price} onChange={(e) => handleChange("price", e.target.value)} placeholder="Price" type="number" step="0.01" className="rounded-3xl border border-slate-700 bg-slate-950 px-5 py-4 text-white" />
+            <input required value={form.cost_price} onChange={(e) => handleChange("cost_price", e.target.value)} placeholder="Cost Price" type="number" step="0.01" className="rounded-3xl border border-slate-700 bg-slate-950 px-5 py-4 text-white" />
+            <input required value={form.stock} onChange={(e) => handleChange("stock", e.target.value)} placeholder="Stock" type="number" className="rounded-3xl border border-slate-700 bg-slate-950 px-5 py-4 text-white" />
             <input required value={form.image} onChange={(e) => handleChange("image", e.target.value)} placeholder="Image URL" className="rounded-3xl border border-slate-700 bg-slate-950 px-5 py-4 text-white" />
             <input value={form.prep} onChange={(e) => handleChange("prep", e.target.value)} placeholder="Prep time" className="rounded-3xl border border-slate-700 bg-slate-950 px-5 py-4 text-white" />
             <input value={form.rating} onChange={(e) => handleChange("rating", e.target.value)} placeholder="Rating" type="number" step="0.1" className="rounded-3xl border border-slate-700 bg-slate-950 px-5 py-4 text-white" />
@@ -143,6 +152,9 @@ export default function AdminProductsPage() {
                   <th className="px-4 py-3">Name</th>
                   <th className="px-4 py-3">Category</th>
                   <th className="px-4 py-3">Price</th>
+                  <th className="px-4 py-3">Cost</th>
+                  <th className="px-4 py-3">Stock</th>
+                  <th className="px-4 py-3">Profit</th>
                   <th className="px-4 py-3">Popular</th>
                   <th className="px-4 py-3">Actions</th>
                 </tr>
@@ -153,6 +165,9 @@ export default function AdminProductsPage() {
                     <td className="px-4 py-3">{product.name}</td>
                     <td className="px-4 py-3">{product.category}</td>
                     <td className="px-4 py-3">Rs {product.price}</td>
+                    <td className="px-4 py-3">Rs {product.cost_price ?? 0}</td>
+                    <td className="px-4 py-3">{product.stock ?? 0}</td>
+                    <td className="px-4 py-3">Rs {Math.round((product.price || 0) - (product.cost_price || 0))}</td>
                     <td className="px-4 py-3">{product.popular ? "Yes" : "No"}</td>
                     <td className="px-4 py-3 space-x-2">
                       <Button type="button" variant="outline" onClick={() => handleEdit(product)} className="rounded-full px-4 py-2">

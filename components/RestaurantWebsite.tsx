@@ -80,6 +80,10 @@ function RestaurantWebsite() {
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
   const delivery = subtotal > 0 ? 150 : 0;
   const total = subtotal + delivery;
+  const profit = cart.reduce((sum, item) => {
+    const cost = Number(item.cost_price || item.cost || 0);
+    return sum + (Number(item.price || 0) - cost) * Number(item.qty || 1);
+  }, 0);
 
   const filteredItems = useMemo(() => {
     return foodItems.filter((item) => {
@@ -180,7 +184,7 @@ function RestaurantWebsite() {
           />
         )}
         {page === "Categories" && <CategoriesPage setPage={setPage} setSelectedCategory={setSelectedCategory} />}
-        {page === "Checkout" && <CheckoutPage total={total} cart={cart} setPage={setPage} clearCart={() => setCart([])} addOrderToHistory={addOrderToHistory} />}
+        {page === "Checkout" && <CheckoutPage total={total} delivery={delivery} subtotal={subtotal} profit={profit} cart={cart} setPage={setPage} clearCart={() => setCart([])} addOrderToHistory={addOrderToHistory} />}
         {page === "My Orders" && <MyOrdersPage userOrders={userOrders} setPage={setPage} setTrackingId={setTrackingId} />}
         {page === "Track Order" && <TrackingPage trackingId={trackingId} setTrackingId={setTrackingId} />}
         {page === "About" && <AboutPage />}
@@ -632,7 +636,7 @@ function CartDrawer({ open, onClose, cart, updateQty, removeItem, subtotal, deli
   );
 }
 
-function CheckoutPage({ total, cart, setPage, clearCart, addOrderToHistory }) {
+function CheckoutPage({ total, delivery, subtotal, profit, cart, setPage, clearCart, addOrderToHistory }) {
   const [customerName, setCustomerName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
@@ -663,7 +667,12 @@ function CheckoutPage({ total, cart, setPage, clearCart, addOrderToHistory }) {
         phone,
         address: `${address}${notes ? ` | Notes: ${notes}` : ""}`,
         items: cart,
+        subtotal,
+        delivery_fee: delivery,
+        discount: 0,
         total,
+        profit,
+        payment_method: "Cash",
         status: "Pending",
         created_at: new Date().toISOString(),
       },
@@ -759,7 +768,7 @@ function CheckoutPage({ total, cart, setPage, clearCart, addOrderToHistory }) {
         </div>
 
         <Button onClick={placeOrder} disabled={saving} className="w-full rounded-full bg-orange-500 py-4 text-lg font-bold text-white hover:bg-orange-400 disabled:opacity-60">
-          {saving ? "Placing order..." : `Place Order - Rs ${total + 150}`}
+          {saving ? "Placing order..." : `Place Order - Rs ${total}`}
         </Button>
       </div>
     </section>
@@ -893,7 +902,7 @@ function AboutPage() {
   return (
     <section className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="rounded-[2rem] border border-slate-800 bg-slate-900 p-12">
-        <h1 className="text-5xl font-black text-white">About SpiceBite</h1>
+        <h1 className="text-5xl font-black text-white">About flafe</h1>
         <p className="mt-6 text-lg leading-8 text-slate-300">We are a modern restaurant focused on fresh ingredients, quick service and a smooth online ordering experience. From spicy biryani to cheesy pizza, every dish is made to feel generous, warm and memorable.</p>
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <StatCard value="8+" label="Delicious items" />
