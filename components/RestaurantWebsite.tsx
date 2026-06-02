@@ -138,10 +138,10 @@ function RestaurantWebsite() {
   return (
     <div className="bg-slate-950 text-slate-100">
       <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/95 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-4 py-3 sm:gap-4 lg:px-6 lg:py-4">
+        <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-4 px-4 py-3 sm:px-6 lg:px-8 lg:py-4">
           <button onClick={() => setPage("Home")} className="flex items-center gap-2 text-lg font-black tracking-tight text-white sm:gap-3 sm:text-xl">
             <img src="https://scontent.flhe38-1.fna.fbcdn.net/v/t39.30808-6/299825356_429330659216310_8922120631896477365_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHW8Hp33TSyrEAtJgbytZYUjJoZoxSqmOyMmhmjFKqY7DuBpf-ey-DBdSejrmvnv3wJdNP4-Q2JwnVMnv1yiQkR&_nc_ohc=w-OauadJs4YQ7kNvwFQEoUt&_nc_oc=AdqxQt_w5H-yOMW0DNri4DuEWR_FAUHv16sygi4mUSwbZNtVTnf6-Hrs81A7rGwl6Lg&_nc_zt=23&_nc_ht=scontent.flhe38-1.fna&_nc_gid=u9Lr_deTDW4pNZ6LZqd6yQ&_nc_ss=7b2a8&oh=00_Af9ZMUWdU9XlZrH_WbXCStkQozGFbnCgBYe8ZRPuSk5Rnw&oe=6A23CB2E" alt="Flafe Logo" className="h-10 w-10 rounded-2xl object-cover shadow-md sm:h-12 sm:w-12 sm:rounded-3xl sm:shadow-lg" />
-            <div className="text-left leading-tight hidden sm:block">
+            <div className="hidden text-left leading-tight sm:block">
               <div className="font-black text-white text-sm">Flafe</div>
               <div className="text-slate-400 text-xs">Restaurant</div>
             </div>
@@ -150,7 +150,7 @@ function RestaurantWebsite() {
             </div>
           </button>
 
-          <nav className="hidden items-center gap-2 lg:flex">
+          <nav className="hidden justify-center lg:flex lg:gap-2">
             {navItems.map((item) => (
               <button key={item} onClick={() => setPage(item)} className={`rounded-full px-5 py-3 text-sm font-semibold transition ${page === item ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-slate-300 hover:bg-slate-900 hover:text-white"}`}>
                 {item}
@@ -158,7 +158,7 @@ function RestaurantWebsite() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center justify-end gap-2 sm:gap-3">
             <PWAInstallPrompt />
             <Button onClick={openCart} className="rounded-full bg-orange-500 px-4 py-2 text-xs text-white shadow-lg shadow-orange-500/20 hover:bg-orange-400 sm:px-5 sm:py-3 sm:text-sm">
               <ShoppingCart size={16} className="sm:size-18" /> <span className="hidden sm:inline">Cart</span> {cartCount > 0 && <span className="ml-1 rounded-full bg-slate-950 px-2 py-0.5 text-xs font-bold text-white sm:ml-2 sm:px-3 sm:py-1">{cartCount}</span>}
@@ -230,142 +230,121 @@ function HomePage({ setPage, addToCart, openCart, foodItems = [], loadingProduct
 
   return (
     <>
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 px-5 py-10 sm:px-6 lg:px-8 lg:py-20">
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800">
         <div className="absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_top,_rgba(249,115,22,0.18),_transparent_55%)]" />
-        <div className="mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-2">
-          <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }} className="relative z-10 order-1 lg:order-1">
-            <p className="mb-3 inline-flex rounded-full bg-orange-500/15 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.35em] text-orange-300 sm:mb-4 sm:px-4 sm:py-2 sm:text-sm">Featured</p>
-            <h1 className="text-4xl font-black leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-7xl">Delicious Meals, Delivered Fast.</h1>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300 sm:mt-6 sm:text-base sm:leading-8 lg:text-lg">Order fresh food online and track your delivery in real time.</p>
-            <div className="mt-5 flex flex-wrap gap-3 sm:mt-6 sm:gap-4">
+        <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-2 lg:items-center">
+          <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }} className="relative z-10">
+            <p className="mb-4 inline-flex rounded-full bg-orange-500/15 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.35em] text-orange-300 sm:text-sm">FEATURED RESTAURANT</p>
+            <h1 className="text-4xl font-black leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">Delicious Meals, Delivered Fast.</h1>
+            <p className="mt-6 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base lg:text-lg">Experience premium restaurant dining at home with expertly prepared meals, fast delivery, and elegant presentation.</p>
+            <div className="mt-8 flex flex-wrap gap-3">
               <Button onClick={() => setPage("Menu")} className="rounded-full bg-orange-500 px-5 py-3 text-sm text-white hover:bg-orange-400 sm:px-7 sm:py-4 sm:text-base">Order Now</Button>
               <Button onClick={() => setPage("Categories")} variant="outline" className="rounded-full border border-slate-700 bg-slate-950/70 px-5 py-3 text-sm text-slate-100 hover:border-orange-500 hover:text-white sm:px-7 sm:py-4 sm:text-base">View Menu</Button>
             </div>
-            <div className="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-3 sm:gap-4">
-              <div className="rounded-xl border border-slate-700 bg-slate-900/50 p-3 sm:p-4">
-                <Star className="text-orange-400" size={18} />
-                <p className="mt-2 text-sm font-black text-white sm:mt-3">4.8 Rating</p>
-                <p className="text-xs text-slate-400 sm:text-xs">Trusted by foodies</p>
+            <div className="mt-8 grid gap-3 sm:grid-cols-3 sm:gap-4">
+              <div className="rounded-[1.75rem] border border-slate-800 bg-slate-900/70 p-4 text-center sm:p-5">
+                <Star className="mx-auto text-orange-400" size={18} />
+                <p className="mt-3 text-sm font-black text-white">4.8 Rating</p>
+                <p className="mt-1 text-xs text-slate-400">Trusted by foodies</p>
               </div>
-              <div className="rounded-xl border border-slate-700 bg-slate-900/50 p-3 sm:p-4">
-                <Clock className="text-orange-400" size={18} />
-                <p className="mt-2 text-sm font-black text-white sm:mt-3">25 Min</p>
-                <p className="text-xs text-slate-400 sm:text-xs">Average delivery</p>
+              <div className="rounded-[1.75rem] border border-slate-800 bg-slate-900/70 p-4 text-center sm:p-5">
+                <Clock className="mx-auto text-orange-400" size={18} />
+                <p className="mt-3 text-sm font-black text-white">25 Min</p>
+                <p className="mt-1 text-xs text-slate-400">Delivery time</p>
               </div>
-              <div className="rounded-xl border border-slate-700 bg-slate-900/50 p-3 sm:p-4">
-                <Bike className="text-orange-400" size={18} />
-                <p className="mt-2 text-sm font-black text-white sm:mt-3">24/7</p>
-                <p className="text-xs text-slate-400 sm:text-xs">Service on</p>
+              <div className="rounded-[1.75rem] border border-slate-800 bg-slate-900/70 p-4 text-center sm:p-5">
+                <Bike className="mx-auto text-orange-400" size={18} />
+                <p className="mt-3 text-sm font-black text-white">24/7</p>
+                <p className="mt-1 text-xs text-slate-400">Service available</p>
               </div>
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }} className="relative order-2 lg:order-2">
-            <div className="absolute -left-10 top-12 h-72 w-72 rounded-full bg-orange-500/10 blur-3xl" />
-            <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/80 shadow-2xl shadow-orange-500/10 sm:rounded-[3rem]">
-              <div className="aspect-[11/10] w-full overflow-hidden">
-                <img className="h-full w-full object-cover" src="https://scontent.flhe38-1.fna.fbcdn.net/v/t39.30808-6/485727887_1040099368139433_718369802226856397_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGsSblrryOLZylT-NFd21nf6YFWC-tGBCLpgVYL60YEIks3yLpUEVsR6VMlFQFL25tSwagr073U6zFsQ9LDx6Qj&_nc_ohc=t03ygRW-Jx8Q7kNvwFLggxp&_nc_oc=AdowcJykFC--KLSIhnKGfoF-p1HLhqObJ9V5qlL2l45uIrSrxm2enm_qQ9MmxBGLnic&_nc_zt=23&_nc_ht=scontent.flhe38-1.fna&_nc_gid=wUj6RXla4zFW6KxXJX7jhQ&_nc_ss=7b2a8&oh=00_Af_ciysdk0bkbr9BMe8OBBJ_5ox62zXeAOtcWc518fcT5A&oe=6A23A8DE" alt="Hero food" />
+          <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }} className="relative flex justify-center lg:justify-end">
+            <div className="w-full max-w-[420px]">
+              <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/90 shadow-2xl shadow-orange-500/10">
+                <div className="relative overflow-hidden">
+                  <img className="h-[420px] w-full object-cover" src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?q=80&w=1200&auto=format&fit=crop" alt="Premium meal" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
+                </div>
+                <div className="px-6 py-8 sm:px-8 sm:py-10">
+                  <span className="inline-flex rounded-full bg-orange-500/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.3em] text-orange-300">Premium Deal</span>
+                  <h2 className="mt-5 text-3xl font-black text-white">Chef’s Signature Platter</h2>
+                  <p className="mt-4 text-sm leading-7 text-slate-400">A curated selection of chef-crafted dishes, perfect for a refined meal at home.</p>
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    <span className="rounded-full bg-slate-900/80 px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-slate-200">Rs 1,550</span>
+                    <span className="rounded-full bg-slate-900/80 px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-slate-200">Serves 2</span>
+                  </div>
+                </div>
               </div>
-              <div className="bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent px-5 py-6 text-white sm:px-8 sm:py-8 backdrop-blur-xl">
-                <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-4 sm:gap-4 sm:pb-4">
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-16">
+        <div className="mb-10 max-w-3xl">
+          <p className="text-xs uppercase tracking-[0.35em] text-orange-300">Popular Picks</p>
+          <h2 className="mt-4 text-4xl font-black text-white sm:text-5xl">Customer favorites</h2>
+          <p className="mt-4 text-sm leading-7 text-slate-400">A refined selection of top dishes designed for premium taste and effortless ordering.</p>
+        </div>
+        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+          {popular.map((item) => (
+            <Card key={item.id} className="overflow-hidden rounded-[1.75rem] border border-slate-800 bg-slate-950 text-white shadow-xl transition hover:-translate-y-1 hover:shadow-2xl">
+              <div className="relative overflow-hidden">
+                <img src={item.image} alt={item.name} className="h-56 w-full object-cover" />
+                <div className="absolute left-4 top-4 rounded-full bg-orange-500/90 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-white">Hot</div>
+              </div>
+              <CardContent className="p-5 sm:p-6">
+                <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.3em] text-orange-300 sm:text-sm">Chef's Choice</p>
-                    <h2 className="mt-1 text-lg font-black sm:mt-2 sm:text-2xl">SpiceBite Platter</h2>
+                    <h3 className="text-base font-black text-white sm:text-xl">{item.name}</h3>
+                    <p className="mt-2 text-xs text-slate-400 sm:text-sm">{item.category}</p>
                   </div>
-                  <span className="rounded-full bg-orange-500 px-3 py-1 text-xs font-black sm:px-4 sm:py-2 sm:text-sm">Rs 1,750</span>
+                  <span className="rounded-full bg-slate-900 px-3 py-1.5 text-xs font-black text-orange-400 sm:px-4 sm:py-2 sm:text-sm">Rs {item.price}</span>
                 </div>
-                <div className="mt-4 flex flex-wrap gap-2 sm:mt-6 sm:gap-3">
-                  <Button onClick={() => setPage("Menu")} className="rounded-full bg-orange-500 px-4 py-2 text-xs text-white hover:bg-orange-400 sm:px-5 sm:py-3 sm:text-sm">Order Now</Button>
-                  <Button onClick={openCart} variant="outline" className="rounded-full border border-slate-700 bg-slate-950/70 px-4 py-2 text-xs text-slate-100 hover:border-orange-500 hover:text-white sm:px-5 sm:py-3 sm:text-sm">View Cart</Button>
+                <p className="mt-4 text-sm leading-6 text-slate-400 line-clamp-2">{item.description}</p>
+                <div className="mt-6 flex items-center justify-between gap-3">
+                  <span className="flex items-center gap-1.5 text-sm text-slate-300"><Star className="text-orange-400" size={14} /> {item.rating}</span>
+                  <Button onClick={() => addToCart(item)} className="rounded-full bg-orange-500 px-4 py-2 text-sm text-white hover:bg-orange-400">Add</Button>
                 </div>
-                <div className="mt-4 grid grid-cols-3 gap-2 text-xs text-slate-200 sm:mt-6 sm:gap-4 sm:text-sm">
-                  <div className="rounded-2xl bg-white/5 p-2 text-center sm:rounded-3xl sm:p-4">
-                    <p className="font-bold">6+</p>
-                    <p className="text-slate-400">Items</p>
-                  </div>
-                  <div className="rounded-2xl bg-white/5 p-2 text-center sm:rounded-3xl sm:p-4">
-                    <p className="font-bold">100%</p>
-                    <p className="text-slate-400">Fresh</p>
-                  </div>
-                  <div className="rounded-2xl bg-white/5 p-2 text-center sm:rounded-3xl sm:p-4">
-                    <p className="font-bold">Popular</p>
-                    <p className="text-slate-400">Choice</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 py-10 sm:px-6 lg:px-8 lg:py-16">
-        <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-          <div>
-            <div className="mb-6 flex flex-wrap items-center gap-2 sm:gap-3 lg:mb-8">
-              <span className="rounded-full bg-orange-500/15 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.3em] text-orange-200 sm:px-4 sm:py-2 sm:text-sm">Popular Picks</span>
-              <span className="text-xs text-slate-400 sm:text-sm">Chef favorites from our menu</span>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
-              {popular.map((item) => (
-                <Card key={item.id} className="overflow-hidden rounded-[1.5rem] border border-slate-800 bg-slate-950 text-white shadow-xl sm:rounded-[2rem]">
-                  <div className="relative">
-                    <img src={item.image} alt={item.name} className="h-40 w-full object-cover sm:h-64" />
-                    <div className="absolute left-3 top-3 inline-flex items-center gap-2 rounded-full bg-orange-500/90 px-2.5 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-white sm:left-4 sm:top-4 sm:px-3 sm:py-2">Hot</div>
-                  </div>
-                  <CardContent className="p-4 sm:p-6">
-                    <div className="flex items-center justify-between gap-3">
-                      <div>
-                        <h3 className="text-base font-black sm:text-xl">{item.name}</h3>
-                        <p className="mt-1 text-xs text-slate-500 sm:mt-2 sm:text-sm">{item.category}</p>
-                      </div>
-                      <span className="rounded-2xl bg-slate-900 px-3 py-1.5 text-xs font-black text-orange-400 sm:px-4 sm:py-2 sm:text-sm">Rs {item.price}</span>
-                    </div>
-                    <p className="mt-3 text-xs leading-5 text-slate-600 sm:mt-4 sm:text-sm sm:leading-6 line-clamp-2">{item.description}</p>
-                    <div className="mt-4 flex items-center justify-between gap-3 sm:mt-6">
-                      <span className="flex items-center gap-1.5 text-xs text-slate-500 sm:text-sm"><Star className="text-orange-400" size={14} /> {item.rating}</span>
-                      <Button onClick={() => addToCart(item)} className="rounded-full bg-orange-500 px-4 py-2 text-xs text-white hover:bg-orange-400 sm:px-5 sm:py-3 sm:text-sm">Add</Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-4 sm:space-y-6">
-            <BannerCard title="Superfast Delivery" subtitle="Track every step in real-time." icon={<Bike size={24} className="sm:size-28" />} />
-            <BannerCard title="Chef-Curated Menu" subtitle="Premium dishes made daily." icon={<ChefHat size={24} className="sm:size-28" />} />
-            <BannerCard title="Secure Payments" subtitle="Safe checkout with instant confirmation." icon={<PackageCheck size={24} className="sm:size-28" />} />
-          </div>
+      <section className="mx-auto max-w-7xl px-6 py-16">
+        <div className="grid gap-6 sm:grid-cols-3">
+          <BannerCard title="Superfast Delivery" subtitle="Track every step in real time." icon={<Bike size={24} className="sm:size-28" />} />
+          <BannerCard title="Chef-Curated Menu" subtitle="Premium dishes made daily." icon={<ChefHat size={24} className="sm:size-28" />} />
+          <BannerCard title="Secure Payments" subtitle="Safe checkout with instant confirmation." icon={<PackageCheck size={24} className="sm:size-28" />} />
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 py-10 sm:px-6 lg:px-8 lg:py-16">
-        <div className="grid gap-8 lg:grid-cols-[0.95fr_0.85fr]">
-          <div>
-            <div className="mb-6 flex flex-col gap-2 lg:mb-8">
-              <p className="text-xs uppercase tracking-[0.3em] text-orange-500 sm:text-sm">Customer Reviews</p>
-              <h2 className="text-3xl font-black text-white sm:text-4xl">Loved By Diners</h2>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
-              <ReviewCard author="Ayesha Khan" rating="5.0" feedback="Amazing food and super fast delivery. The packaging looked premium and every bite was flavorful." />
-              <ReviewCard author="Bilal Ahmed" rating="4.9" feedback="Best biryani in town. The app design feels modern and ordering was effortless." />
-            </div>
-          </div>
+      <section className="mx-auto max-w-7xl px-6 py-16">
+        <div className="mb-10 max-w-3xl">
+          <p className="text-xs uppercase tracking-[0.35em] text-orange-300">Customer Reviews</p>
+          <h2 className="mt-4 text-4xl font-black text-white sm:text-5xl">Loved by diners</h2>
+        </div>
+        <div className="grid gap-6 lg:grid-cols-3">
+          <ReviewCard author="Ayesha Khan" rating="5.0" feedback="Amazing food and super fast delivery. The packaging felt premium and every bite was flavorful." />
+          <ReviewCard author="Bilal Ahmed" rating="4.9" feedback="Best biryani in town. Ordering was effortless and the presentation was exceptional." />
+          <ReviewCard author="Sara Malik" rating="5.0" feedback="Fresh ingredients, speedy delivery, and a dining experience that feels luxurious at home." />
+        </div>
+      </section>
 
-          <div>
-            <div className="rounded-[2rem] bg-slate-950 p-6 text-slate-100 shadow-2xl sm:p-8">
-              <p className="text-xs uppercase tracking-[0.3em] text-orange-400 sm:text-sm">Gallery</p>
-              <h3 className="mt-3 text-2xl font-black sm:mt-4 sm:text-3xl">Meals Worth Scrolling</h3>
-              <p className="mt-2 text-xs text-slate-400 sm:mt-3 sm:text-base">A showcase of our most photographed dishes and signature combos.</p>
-              <div className="mt-6 grid gap-3 sm:grid-cols-2 sm:gap-4">
-                {galleryImages.map((src, index) => (
-                  <div key={index} className="overflow-hidden rounded-[1.5rem] bg-slate-900 sm:rounded-[2rem]">
-                    <img src={src} alt={`Gallery ${index + 1}`} className="h-32 w-full object-cover transition duration-500 hover:scale-105 sm:h-44" />
-                  </div>
-                ))}
-              </div>
+      <section className="mx-auto max-w-7xl px-6 py-16">
+        <div className="mb-10 max-w-3xl">
+          <p className="text-xs uppercase tracking-[0.35em] text-orange-300">Gallery</p>
+          <h2 className="mt-4 text-4xl font-black text-white sm:text-5xl">A premium dining experience</h2>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {galleryImages.map((src, index) => (
+            <div key={index} className="overflow-hidden rounded-[1.75rem] bg-slate-900">
+              <img src={src} alt={`Gallery ${index + 1}`} className="h-56 w-full object-cover transition duration-500 hover:scale-105" />
             </div>
-          </div>
+          ))}
         </div>
       </section>
     </>
