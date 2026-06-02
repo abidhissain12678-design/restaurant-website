@@ -117,13 +117,81 @@ export default function AdminPOSPage() {
   };
 
   const printReceipt = () => {
-    // ensure we have an order payload to print
     if (!orderPayload) {
       setMessage("No receipt available to print. Save an order first.");
       return;
     }
-    // open print dialog; print CSS will format to 80mm thermal receipt
-    window.print();
+
+    const printContents = document.getElementById("receipt-print")?.innerHTML;
+    if (!printContents) {
+      setMessage("Receipt content not found.");
+      return;
+    }
+
+    const win = window.open("", "", "width=400,height=600");
+    if (!win) {
+      setMessage("Unable to open print window. Please allow popups.");
+      return;
+    }
+
+    win.document.write(`
+      <html>
+        <head>
+          <title>Receipt</title>
+          <style>
+            @page {
+              size: 80mm auto;
+              margin: 0;
+            }
+
+            body {
+              width: 80mm;
+              margin: 0;
+              padding: 8px;
+              font-family: monospace;
+              font-size: 12px;
+            }
+
+            table {
+              width: 100%;
+              border-collapse: collapse;
+            }
+
+            hr {
+              border: none;
+              border-top: 1px dashed #000;
+            }
+
+            .receipt-title {
+              text-align: center;
+              font-weight: 700;
+              margin-bottom: 6px;
+            }
+
+            .receipt-line {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 2px;
+            }
+
+            .receipt-small {
+              font-size: 11px;
+            }
+          </style>
+        </head>
+        <body>
+          ${printContents}
+        </body>
+      </html>
+    `);
+
+    win.document.close();
+    win.focus();
+
+    setTimeout(() => {
+      win.print();
+      win.close();
+    }, 500);
   };
 
   const downloadReceiptPDF = async () => {
@@ -339,7 +407,7 @@ export default function AdminPOSPage() {
       </div>
 
       {/* Thermal receipt markup - visible only for print */}
-      <div className="receipt" aria-hidden={!orderPayload}>
+      <div id="receipt-print" className="receipt" aria-hidden={!orderPayload}>
         {orderPayload ? (
           <div>
             <div style={{ textAlign: 'center', marginBottom: 6 }}>
