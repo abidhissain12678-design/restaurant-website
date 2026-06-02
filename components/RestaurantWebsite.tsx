@@ -288,35 +288,6 @@ function HomePage({ setPage, setSelectedCategory, addToCart, openCart, foodItems
 
   return (
     <>
-      <section className="mx-auto max-w-7xl px-6 py-16">
-        <div className="mb-8">
-          <p className="text-xs uppercase tracking-[0.35em] text-orange-300">Explore Categories</p>
-          <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Browse by flavor</h2>
-          <p className="mt-3 text-sm leading-7 text-slate-400">Small category cards help you find the perfect meal quickly.</p>
-        </div>
-        <div className="-mx-6 overflow-hidden pb-4 sm:mx-0">
-          <div className="flex gap-4 overflow-x-auto px-6 pb-4 sm:px-0 sm:pb-0 scrollbar-hide snap-x snap-mandatory">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => { setSelectedCategory(category); setPage("Menu"); }}
-                className="snap-start flex min-w-[280px] flex-shrink-0 items-center gap-4 overflow-hidden rounded-[1.75rem] border border-slate-800 bg-slate-950 p-4 text-left transition hover:border-orange-500/50 sm:min-w-[300px]"
-              >
-                <img
-                  src={categoryImages[category] || categoryImages.Default}
-                  alt={category}
-                  className="h-24 w-24 rounded-3xl object-cover"
-                />
-                <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.25em] text-orange-300">{category}</p>
-                  <p className="mt-2 text-sm text-slate-400">Explore {category.toLowerCase()}</p>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section
         className="relative overflow-hidden bg-slate-950"
         onMouseEnter={() => setIsPaused(true)}
