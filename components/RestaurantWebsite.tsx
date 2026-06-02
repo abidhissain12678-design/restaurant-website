@@ -339,16 +339,6 @@ function HomePage({ setPage, addToCart, openCart, foodItems = [], loadingProduct
         </div>
       </section>
 
-      <section className="bg-slate-900 py-12 sm:py-16">
-        <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
-          <div className="grid gap-6 sm:gap-8 lg:grid-cols-3">
-            <Stat label="Average Rating" value="4.8" />
-            <Stat label="Delivery Time" value="25 Min" />
-            <Stat label="Top Dishes" value="8+" />
-          </div>
-        </div>
-      </section>
-
       <section className="mx-auto max-w-7xl px-5 py-10 sm:px-6 lg:px-8 lg:py-16">
         <div className="grid gap-8 lg:grid-cols-[0.95fr_0.85fr]">
           <div>
