@@ -18,6 +18,7 @@ export default function AdminPOSPage() {
   const [message, setMessage] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [orderCreated, setOrderCreated] = useState(null);
+  const [orderPayload, setOrderPayload] = useState(null);
 
   useEffect(() => {
     loadProducts();
@@ -65,44 +66,152 @@ export default function AdminPOSPage() {
     }
 
     setIsSaving(true);
-    const generatedId = `POS-${Math.floor(100000 + Math.random() * 900000)}`;
+    const generatedId = `POS-${Date.now()}`;
+
+    const cost_total = cart.reduce((sum, item) => {
+      const cost = Number(item.cost_price ?? item.cost ?? 0);
+      return sum + cost * Number(item.quantity || 1);
+    }, 0);
+
     const profit = cart.reduce((sum, item) => {
-      const cost = Number(item.cost_price || item.cost || 0);
+      const cost = Number(item.cost_price ?? item.cost ?? 0);
       return sum + (Number(item.price || 0) - cost) * Number(item.quantity || 1);
     }, 0);
 
-    const { error } = await supabase.from("orders").insert([
-      {
-        id: generatedId,
-        customer_name: "Walk-in Customer",
-        phone: "N/A",
-        address: "In-store pickup",
-        items: cart,
-        subtotal,
-        tax: totalTax,
-        discount: totalDiscount,
-        total,
-        profit,
-        payment_method: paymentMethod,
-        status: "Completed",
-        created_at: new Date().toISOString(),
-      },
-    ]);
+    const payload = {
+      id: generatedId,
+      customer_name: "Walk-in Customer",
+      phone: "N/A",
+      address: "Counter Sale",
+      items: cart,
+      subtotal,
+      delivery_fee: 0,
+      discount: totalDiscount,
+      total,
+      cost_total,
+      profit,
+      cash_received: Number(cashReceived || 0),
+      change: Number((Number(cashReceived || 0) - total) || 0),
+      payment_method: paymentMethod,
+      order_type: "POS",
+      status: "Delivered",
+      created_at: new Date().toISOString(),
+    };
+
+    const { error } = await supabase.from("orders").insert([payload]);
 
     setIsSaving(false);
 
     if (!error) {
       setMessage(`Order ${generatedId} saved successfully.`);
       setOrderCreated(generatedId);
+      setOrderPayload(payload);
       setCart([]);
+      setDiscount(0);
+      setTax(0);
       setCashReceived(0);
     } else {
+      console.error("POS order save error:", error);
       setMessage("Unable to save order. Please try again.");
+    }
+  };
+
+  const printReceipt = () => {
+    // ensure we have an order payload to print
+    if (!orderPayload) {
+      setMessage("No receipt available to print. Save an order first.");
+      return;
+    }
+    // open print dialog; print CSS will format to 80mm thermal receipt
+    window.print();
+  };
+
+  const downloadReceiptPDF = async () => {
+    const order = orderPayload;
+    if (!order) {
+      setMessage("No receipt available to download. Save an order first.");
+      return;
+    }
+
+    // dynamically load jsPDF if not available
+    const ensureJsPDF = () => new Promise((resolve, reject) => {
+      if (window.jspdf && window.jspdf.jsPDF) return resolve(window.jspdf.jsPDF);
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+      script.onload = () => {
+        // @ts-ignore
+        resolve(window.jspdf.jsPDF);
+      };
+      script.onerror = reject;
+      document.body.appendChild(script);
+    });
+
+    try {
+      const jsPDFClass = await ensureJsPDF();
+      // @ts-ignore
+      const doc = new jsPDFClass({ unit: 'mm', format: [80, 200] });
+      const lineHeight = 5;
+      let y = 8;
+      doc.setFont('Courier');
+      doc.setFontSize(11);
+      doc.text('Flafe Restaurant', 40, y, { align: 'center' }); y += lineHeight;
+      doc.setFontSize(9);
+      doc.text('Phone: +92 300 0000000', 40, y, { align: 'center' }); y += lineHeight;
+      doc.text('Address: Karachi, Pakistan', 40, y, { align: 'center' }); y += lineHeight * 1.2;
+
+      doc.setFontSize(9);
+      doc.text(`Order ID: ${order.id}`, 8, y); y += lineHeight;
+      doc.text(`Date: ${new Date(order.created_at).toLocaleString()}`, 8, y); y += lineHeight;
+      doc.text(`Customer: ${order.customer_name || 'Walk-in Customer'}`, 8, y); y += lineHeight * 1.2;
+
+      doc.setFontSize(9);
+      doc.text('Item                Qty   Price   Total', 8, y); y += lineHeight;
+      doc.text('----------------------------------------', 8, y); y += lineHeight;
+      (order.items || []).forEach((it) => {
+        const name = (it.name || '').slice(0, 16).padEnd(18, ' ');
+        const qty = String(it.quantity || it.qty || 1).padStart(3, ' ');
+        const price = String(it.price || 0).padStart(6, ' ');
+        const totalLine = String((it.price || 0) * (it.quantity || it.qty || 1)).padStart(7, ' ');
+        doc.text(`${name}${qty}  ${price}  ${totalLine}`, 8, y);
+        y += lineHeight;
+      });
+
+      y += lineHeight * 0.5;
+      doc.text(`Subtotal: Rs ${order.subtotal || 0}`, 8, y); y += lineHeight;
+      if (order.discount) { doc.text(`Discount: Rs ${order.discount}`, 8, y); y += lineHeight; }
+      if (order.tax) { doc.text(`Tax: Rs ${order.tax}`, 8, y); y += lineHeight; }
+      if (order.delivery_fee) { doc.text(`Delivery: Rs ${order.delivery_fee}`, 8, y); y += lineHeight; }
+      doc.setFontSize(11);
+      doc.text(`Total: Rs ${order.total}`, 8, y); y += lineHeight * 1.2;
+
+      doc.setFontSize(9);
+      doc.text(`Payment: ${order.payment_method || 'Cash'}`, 8, y); y += lineHeight;
+      if (order.cash_received !== undefined) { doc.text(`Cash: Rs ${order.cash_received}`, 8, y); y += lineHeight; }
+      if (order.change !== undefined) { doc.text(`Change: Rs ${order.change}`, 8, y); y += lineHeight; }
+
+      y += lineHeight;
+      doc.text('Thank you for ordering!', 40, y, { align: 'center' });
+
+      const fileName = `receipt-${order.id}.pdf`;
+      doc.save(fileName);
+    } catch (e) {
+      console.error('Failed to generate PDF receipt:', e);
+      setMessage('Unable to generate PDF. Try printing instead.');
     }
   };
 
   return (
     <main className="min-h-screen bg-slate-950 px-4 py-12 text-white sm:px-6 lg:px-8">
+      <style>{`@media print {
+        @page { size: 80mm auto; margin: 0; }
+        body { margin: 0; padding: 0; }
+        .receipt { width: 80mm; padding: 8px; font-size: 11px; font-family: monospace; }
+        .no-print { display: none !important; }
+      }
+      @media screen {
+        .receipt { display: none; }
+      }
+      `}</style>
       <div className="mx-auto max-w-7xl space-y-8">
         <div className="rounded-[2rem] border border-slate-800 bg-slate-900 p-8">
           <h1 className="text-5xl font-black">POS Screen</h1>
@@ -212,17 +321,74 @@ export default function AdminPOSPage() {
                 )}
               </div>
             </div>
-
-            <Button onClick={handleCompleteOrder} disabled={isSaving} className="mt-6 w-full rounded-full bg-orange-500 px-6 py-4 text-base text-white hover:bg-orange-400 disabled:opacity-70">
+            <Button onClick={handleCompleteOrder} disabled={isSaving} className="mt-6 w-full rounded-full bg-orange-500 px-6 py-4 text-base text-white hover:bg-orange-400 disabled:opacity-70 no-print">
               {isSaving ? "Saving order..." : "Complete Order"}
             </Button>
-            <Button onClick={() => window.print()} className="mt-3 w-full rounded-full border border-slate-800 bg-slate-950 px-6 py-4 text-base text-white hover:border-orange-500">
-              Print Receipt
-            </Button>
+            <div className="mt-3 flex gap-3">
+              <Button onClick={printReceipt} className="flex-1 rounded-full border border-slate-800 bg-slate-950 px-6 py-4 text-base text-white hover:border-orange-500 no-print">
+                Print Receipt
+              </Button>
+              <Button onClick={downloadReceiptPDF} className="flex-1 rounded-full border border-slate-800 bg-slate-950 px-6 py-4 text-base text-white hover:border-orange-500 no-print">
+                Download Receipt PDF
+              </Button>
+            </div>
             <div className="mt-4 text-sm text-slate-400">Change returned: Rs {change >= 0 ? change : 0}</div>
             {orderCreated && <div className="mt-3 rounded-3xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">Created order ID: {orderCreated}</div>}
           </div>
         </div>
+      </div>
+
+      {/* Thermal receipt markup - visible only for print */}
+      <div className="receipt" aria-hidden={!orderPayload}>
+        {orderPayload ? (
+          <div>
+            <div style={{ textAlign: 'center', marginBottom: 6 }}>
+              <div style={{ fontWeight: 800 }}>Flafe Restaurant</div>
+              <div style={{ fontSize: 11 }}>Phone: +92 300 0000000</div>
+              <div style={{ fontSize: 11 }}>Address: Karachi, Pakistan</div>
+            </div>
+
+            <div style={{ fontSize: 11, marginBottom: 6 }}>
+              <div>Order ID: {orderPayload.id}</div>
+              <div>Date: {new Date(orderPayload.created_at).toLocaleString()}</div>
+              <div>Customer: {orderPayload.customer_name || 'Walk-in Customer'}</div>
+            </div>
+
+            <div style={{ fontSize: 11 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700 }}>
+                <div style={{ width: '55%' }}>Item</div>
+                <div style={{ width: '15%', textAlign: 'right' }}>Qty</div>
+                <div style={{ width: '15%', textAlign: 'right' }}>Price</div>
+                <div style={{ width: '15%', textAlign: 'right' }}>Total</div>
+              </div>
+              <div style={{ borderTop: '1px dashed #000', margin: '6px 0' }} />
+              {(orderPayload.items || []).map((it, idx) => (
+                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, marginBottom: 2 }}>
+                  <div style={{ width: '55%' }}>{it.name}</div>
+                  <div style={{ width: '15%', textAlign: 'right' }}>{it.quantity ?? it.qty ?? 1}</div>
+                  <div style={{ width: '15%', textAlign: 'right' }}>Rs {it.price}</div>
+                  <div style={{ width: '15%', textAlign: 'right' }}>Rs {(it.price || 0) * (it.quantity ?? it.qty ?? 1)}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ borderTop: '1px dashed #000', margin: '6px 0' }} />
+            <div style={{ fontSize: 11 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}><div>Subtotal</div><div>Rs {orderPayload.subtotal || 0}</div></div>
+              {orderPayload.discount ? <div style={{ display: 'flex', justifyContent: 'space-between' }}><div>Discount</div><div>Rs {orderPayload.discount}</div></div> : null}
+              {orderPayload.tax ? <div style={{ display: 'flex', justifyContent: 'space-between' }}><div>Tax</div><div>Rs {orderPayload.tax}</div></div> : null}
+              {orderPayload.delivery_fee ? <div style={{ display: 'flex', justifyContent: 'space-between' }}><div>Delivery</div><div>Rs {orderPayload.delivery_fee}</div></div> : null}
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 800, marginTop: 6 }}><div>Total</div><div>Rs {orderPayload.total}</div></div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6 }}><div>Payment</div><div>{orderPayload.payment_method}</div></div>
+              {orderPayload.cash_received !== undefined ? <div style={{ display: 'flex', justifyContent: 'space-between' }}><div>Cash</div><div>Rs {orderPayload.cash_received}</div></div> : null}
+              {orderPayload.change !== undefined ? <div style={{ display: 'flex', justifyContent: 'space-between' }}><div>Change</div><div>Rs {orderPayload.change}</div></div> : null}
+            </div>
+
+            <div style={{ textAlign: 'center', marginTop: 8 }}>Thank you for ordering!</div>
+          </div>
+        ) : (
+          <div style={{ textAlign: 'center' }}>No receipt available</div>
+        )}
       </div>
     </main>
   );
