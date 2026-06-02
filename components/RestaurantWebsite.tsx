@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Award, Bike, ChefHat, Clock, Heart, Image, Mail, MessageCircle, Minus, Plus, Search, ShoppingCart, Star, Trash2, Phone, PackageCheck, MapPin } from "lucide-react";
 import { Button, Card, CardContent } from "@/components/ui";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
@@ -26,6 +26,39 @@ const categoryImages = {
   Deals: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?q=80&w=800&auto=format&fit=crop",
   Default: "https://images.unsplash.com/photo-1498575207497-1dce7f9f7e08?q=80&w=800&auto=format&fit=crop",
 };
+
+const heroSlides = [
+  {
+    title: "Burger Deal",
+    subtitle: "Get a juicy burger combo with crispy fries and a drink, delivered hot and fast.",
+    cta: "Order Burger",
+    image: "https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=1600&auto=format&fit=crop",
+  },
+  {
+    title: "Pizza Deal",
+    subtitle: "Premium hand-tossed pizzas with fresh toppings and signature sauces.",
+    cta: "Order Pizza",
+    image: "https://images.unsplash.com/photo-1548365328-1c0f7b319145?q=80&w=1600&auto=format&fit=crop",
+  },
+  {
+    title: "Family Combo",
+    subtitle: "Share a generous family feast with favorites for everyone at the table.",
+    cta: "Order Family Combo",
+    image: "https://images.unsplash.com/photo-1604908553991-0ad45d3819d7?q=80&w=1600&auto=format&fit=crop",
+  },
+  {
+    title: "Free Delivery",
+    subtitle: "Enjoy fast delivery with no extra fee on all orders above Rs 1,000.",
+    cta: "Start Free Delivery",
+    image: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d?q=80&w=1600&auto=format&fit=crop",
+  },
+  {
+    title: "Weekend Special",
+    subtitle: "Reserve your weekend favorites with exclusive chef-curated combos.",
+    cta: "Weekend Specials",
+    image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600&auto=format&fit=crop",
+  },
+];
 
 function RestaurantWebsite() {
   const [page, setPage] = useState("Home");
@@ -179,7 +212,7 @@ function RestaurantWebsite() {
       </header>
 
       <main className="relative overflow-hidden">
-        {page === "Home" && <HomePage setPage={setPage} addToCart={addToCart} openCart={openCart} foodItems={foodItems} loadingProducts={loadingProducts} />}
+        {page === "Home" && <HomePage setPage={setPage} setSelectedCategory={setSelectedCategory} addToCart={addToCart} openCart={openCart} foodItems={foodItems} loadingProducts={loadingProducts} />}
         {page === "Menu" && (
           <MenuPage
             search={search}
@@ -226,8 +259,22 @@ function RestaurantWebsite() {
   );
 }
 
-function HomePage({ setPage, addToCart, openCart, foodItems = [], loadingProducts = false }) {
+function HomePage({ setPage, setSelectedCategory, addToCart, openCart, foodItems = [], loadingProducts = false }) {
   const popular = foodItems.filter((item) => item.popular).slice(0, 4);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!isPaused) {
+        setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+      }
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [isPaused]);
+
+  const goNextSlide = () => setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+  const goPrevSlide = () => setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
 
   if (loadingProducts && foodItems.length === 0) {
     return (
@@ -270,34 +317,65 @@ function HomePage({ setPage, addToCart, openCart, foodItems = [], loadingProduct
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-16">
-        <div className="max-w-3xl">
-          <p className="text-xs uppercase tracking-[0.35em] text-orange-300">FEATURED RESTAURANT</p>
-          <h1 className="mt-4 text-4xl font-black text-white sm:text-5xl">Delicious Meals, Delivered Fast.</h1>
-          <p className="mt-4 text-base leading-7 text-slate-300">Experience premium restaurant dining at home with expertly prepared meals, fast delivery, and elegant presentation.</p>
-        </div>
+      <section
+        className="relative overflow-hidden bg-slate-950"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 opacity-80" />
+        <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+          <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/90 shadow-2xl shadow-orange-500/15">
+            <div className="relative h-[420px] sm:h-[520px]">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentSlide}
+                  initial={{ opacity: 0, x: 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -40 }}
+                  transition={{ duration: 0.8, ease: "easeInOut" }}
+                  className="absolute inset-0"
+                >
+                  <img src={heroSlides[currentSlide].image} alt={heroSlides[currentSlide].title} className="h-full w-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent" />
+                  <div className="absolute inset-0 flex flex-col justify-end px-6 pb-10 text-white sm:px-10 lg:px-14">
+                    <div className="max-w-2xl">
+                      <p className="text-sm uppercase tracking-[0.35em] text-orange-300">Premium Banner</p>
+                      <h1 className="mt-4 text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">{heroSlides[currentSlide].title}</h1>
+                      <p className="mt-4 max-w-xl text-base leading-7 text-slate-200 sm:text-lg">{heroSlides[currentSlide].subtitle}</p>
+                      <div className="mt-8 flex flex-wrap gap-3">
+                        <Button onClick={() => setPage("Menu")} className="rounded-full bg-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-orange-500/20 hover:bg-orange-400 sm:px-7 sm:py-4">{heroSlides[currentSlide].cta}</Button>
+                        <Button onClick={openCart} variant="outline" className="rounded-full border border-white/20 bg-slate-950/60 px-6 py-3 text-sm text-white transition hover:border-orange-500 hover:text-white sm:px-7 sm:py-4">View Cart</Button>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
 
-        <div className="mt-10 space-y-6">
-          <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/90 shadow-2xl shadow-orange-500/10">
-            <div className="aspect-[4/3] w-full overflow-hidden">
-              <img
-                className="h-full w-full object-cover"
-                src="https://scontent.flhe38-1.fna.fbcdn.net/v/t39.30808-6/462040870_919136030235768_8994001254767627136_n.png?stp=dst-png_s960x960&_nc_cat=111&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeEb4XMyHZByRqXPNDqHwg4RX0SFus9UgvZfRIW6z1SC9mzdrGvESQayH0ONAhASBwH3QUO50CHHQx3BhTABvj0s&_nc_ohc=zkyw0XoOgNcQ7kNvwFHoJya&_nc_oc=AdrOEHnNgQfMPi4YaQN-M7gycGR5iljPeIdrjAW4M5Hc73XOJpG7OpUMs_hWfoRp0hU&_nc_zt=23&_nc_ht=scontent.flhe38-1.fna&_nc_gid=PfXZZhyuHWg1QrR1Qwwhqw&_nc_ss=7b2a8&oh=00_Af-VUCb1LXmg3hIg08ZbiWYQquDHcbu3ySIgdeKTyoPYZA&oe=6A24DC42"
-                alt="Premium meal"
-              />
+              <button
+                onClick={goPrevSlide}
+                className="absolute left-4 top-1/2 z-20 -translate-y-1/2 rounded-full border border-white/10 bg-slate-900/60 p-3 text-white transition hover:bg-slate-900"
+                aria-label="Previous slide"
+              >
+                <ArrowRight className="rotate-180" size={18} />
+              </button>
+              <button
+                onClick={goNextSlide}
+                className="absolute right-4 top-1/2 z-20 -translate-y-1/2 rounded-full border border-white/10 bg-slate-900/60 p-3 text-white transition hover:bg-slate-900"
+                aria-label="Next slide"
+              >
+                <ArrowRight size={18} />
+              </button>
             </div>
-            <div className="px-6 py-8 sm:px-8 sm:py-10">
-              <span className="inline-flex rounded-full bg-orange-500/15 px-3 py-1 text-xs font-bold uppercase tracking-[0.35em] text-orange-300">Premium Deal</span>
-              <h2 className="mt-5 text-3xl font-black text-white sm:text-4xl">Chef’s Signature Platter</h2>
-              <p className="mt-4 text-sm leading-7 text-slate-400">A curated selection of chef-crafted dishes, perfect for a refined meal at home.</p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <span className="rounded-full bg-slate-900/80 px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-slate-200">Rs 1,550</span>
-                <span className="rounded-full bg-slate-900/80 px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-slate-200">Serves 2</span>
-              </div>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Button onClick={() => setPage("Menu")} className="rounded-full bg-orange-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-orange-500/20 hover:bg-orange-400 sm:px-6 sm:py-4">Order Now</Button>
-                <Button onClick={openCart} variant="outline" className="rounded-full border border-slate-700 bg-slate-950/70 px-5 py-3 text-sm text-slate-100 transition hover:border-orange-500 hover:text-white sm:px-6 sm:py-4">View Cart</Button>
-              </div>
+
+            <div className="mx-auto flex max-w-md items-center justify-center gap-3 py-6">
+              {heroSlides.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  className={`h-2.5 rounded-full transition-all ${currentSlide === index ? "w-10 bg-orange-500" : "w-3 bg-slate-700"}`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
             </div>
           </div>
         </div>
