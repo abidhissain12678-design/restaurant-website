@@ -368,13 +368,13 @@ function HomePage({ setPage, setSelectedCategory, addToCart, openCart, foodItems
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h3 className="text-base font-black text-white sm:text-xl">{item.name}</h3>
-                    <p className="mt-2 text-xs text-slate-400 sm:text-sm">{item.category}</p>
+                    <p className="mt-2 text-xs text-slate-600 sm:text-sm">{item.category}</p>
                   </div>
                   <span className="rounded-full bg-slate-900 px-3 py-1.5 text-xs font-black text-orange-400 sm:px-4 sm:py-2 sm:text-sm">Rs {item.price}</span>
                 </div>
-                <p className="mt-4 text-sm leading-6 text-slate-400 line-clamp-2">{item.description}</p>
+                <p className="mt-4 text-sm leading-6 text-slate-900 line-clamp-2">{item.description}</p>
                 <div className="mt-6 flex items-center justify-between gap-3">
-                  <span className="flex items-center gap-1.5 text-sm text-slate-300"><Star className="text-orange-400" size={14} /> {item.rating}</span>
+                  <span className="flex items-center gap-1.5 text-sm text-slate-500"><Star className="text-orange-400" size={14} /> {item.rating}</span>
                   <Button onClick={() => addToCart(item)} className="rounded-full bg-orange-500 px-4 py-2 text-sm text-white hover:bg-orange-400">Add</Button>
                 </div>
               </CardContent>
