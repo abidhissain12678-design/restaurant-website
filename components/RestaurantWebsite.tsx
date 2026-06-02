@@ -38,7 +38,7 @@ const heroSlides = [
     title: "Pizza Deal",
     subtitle: "Premium hand-tossed pizzas with fresh toppings and signature sauces.",
     cta: "Order Pizza",
-    image: "https://images.unsplash.com/photo-1548365328-1c0f7b319145?q=80&w=1600&auto=format&fit=crop",
+    image: "https://scontent.flhe38-1.fna.fbcdn.net/v/t39.30808-6/522631570_1131221672360535_6814571547132796139_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHAj4lkYDKdik3CRgbJk3yzAw08cpHg8a8DDTxykeDxr1LM8bEsTKywnxWStFHnaUZv1k5PNQ0GTHirizUXGM7P&_nc_ohc=VofnrsjC4k8Q7kNvwGByxVM&_nc_oc=Adr5ZpHsWDLuM_kV2ZYCE4l70vay2KZJFh5-P2epCZuaKQ-LxncQ0sViqYJ1EDvr5Ns&_nc_zt=23&_nc_ht=scontent.flhe38-1.fna&_nc_gid=5lKO38HZ1WJmvDXaeexC4g&_nc_ss=7b2a8&oh=00_Af88VXjILtKE8lMCYYECl4pk3ydgU-jfs41BANuhg_hPnQ&oe=6A24C8F0",
   },
   {
     title: "Family Combo",
@@ -50,7 +50,7 @@ const heroSlides = [
     title: "Free Delivery",
     subtitle: "Enjoy fast delivery with no extra fee on all orders above Rs 1,000.",
     cta: "Start Free Delivery",
-    image: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d?q=80&w=1600&auto=format&fit=crop",
+    image: "https://scontent.flhe38-1.fna.fbcdn.net/v/t39.30808-6/623360472_1281290140687020_2096769519967754830_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeGHaLggTiD14zXPnbSJeuZGzGm3wvNDLTbMabfC80MtNrFmyBV284y9xsjFVKNvhnRHLR9sZyM2j8drU8AuulP8&_nc_ohc=5V8r1G4fLa8Q7kNvwHYXA7B&_nc_oc=AdoURqiBUTmuJHV6tm41L_q9iBFp7YlJCD1v1RJlyWcVejpWbqI6JkZfIsKrQRmj2i8&_nc_zt=23&_nc_ht=scontent.flhe38-1.fna&_nc_gid=UP0w0cqjZYR6_xIW7K1rLA&_nc_ss=7b2a8&oh=00_Af_YnbXutNGLC-c-MsQHl5YfLWC9_VuSRPBE4govm7-MJQ&oe=6A24DF9A",
   },
   {
     title: "Weekend Special",
