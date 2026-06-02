@@ -280,7 +280,7 @@ function HomePage({ setPage, addToCart, openCart, foodItems = [], loadingProduct
             <div className="aspect-[4/3] w-full overflow-hidden">
               <img
                 className="h-full w-full object-cover"
-                src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200&auto=format&fit=crop"
+                src="https://scontent.flhe38-1.fna.fbcdn.net/v/t39.30808-6/462040870_919136030235768_8994001254767627136_n.png?stp=dst-png_s960x960&_nc_cat=111&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeEb4XMyHZByRqXPNDqHwg4RX0SFus9UgvZfRIW6z1SC9mzdrGvESQayH0ONAhASBwH3QUO50CHHQx3BhTABvj0s&_nc_ohc=zkyw0XoOgNcQ7kNvwFHoJya&_nc_oc=AdrOEHnNgQfMPi4YaQN-M7gycGR5iljPeIdrjAW4M5Hc73XOJpG7OpUMs_hWfoRp0hU&_nc_zt=23&_nc_ht=scontent.flhe38-1.fna&_nc_gid=PfXZZhyuHWg1QrR1Qwwhqw&_nc_ss=7b2a8&oh=00_Af-VUCb1LXmg3hIg08ZbiWYQquDHcbu3ySIgdeKTyoPYZA&oe=6A24DC42"
                 alt="Premium meal"
               />
             </div>
