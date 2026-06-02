@@ -16,6 +16,17 @@ const galleryImages = [
   "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200&auto=format&fit=crop",
 ];
 
+const categoryImages = {
+  Pizza: "https://images.unsplash.com/photo-1542281286-9e0a16bb7366?q=80&w=800&auto=format&fit=crop",
+  Burger: "https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=800&auto=format&fit=crop",
+  Biryani: "https://images.unsplash.com/photo-1543353071-873f17a7a088?q=80&w=800&auto=format&fit=crop",
+  "Fast Food": "https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=800&auto=format&fit=crop",
+  Drinks: "https://images.unsplash.com/photo-1502741126161-b048400d6c11?q=80&w=800&auto=format&fit=crop",
+  Desserts: "https://images.unsplash.com/photo-1505253211988-1a6b2f0fd0de?q=80&w=800&auto=format&fit=crop",
+  Deals: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?q=80&w=800&auto=format&fit=crop",
+  Default: "https://images.unsplash.com/photo-1498575207497-1dce7f9f7e08?q=80&w=800&auto=format&fit=crop",
+};
+
 function RestaurantWebsite() {
   const [page, setPage] = useState("Home");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -230,55 +241,63 @@ function HomePage({ setPage, addToCart, openCart, foodItems = [], loadingProduct
 
   return (
     <>
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800">
-        <div className="absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_top,_rgba(249,115,22,0.18),_transparent_55%)]" />
-        <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-2 lg:items-center">
-          <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }} className="relative z-10">
-            <p className="mb-4 inline-flex rounded-full bg-orange-500/15 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.35em] text-orange-300 sm:text-sm">FEATURED RESTAURANT</p>
-            <h1 className="text-4xl font-black leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">Delicious Meals, Delivered Fast.</h1>
-            <p className="mt-6 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base lg:text-lg">Experience premium restaurant dining at home with expertly prepared meals, fast delivery, and elegant presentation.</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button onClick={() => setPage("Menu")} className="rounded-full bg-orange-500 px-5 py-3 text-sm text-white hover:bg-orange-400 sm:px-7 sm:py-4 sm:text-base">Order Now</Button>
-              <Button onClick={() => setPage("Categories")} variant="outline" className="rounded-full border border-slate-700 bg-slate-950/70 px-5 py-3 text-sm text-slate-100 hover:border-orange-500 hover:text-white sm:px-7 sm:py-4 sm:text-base">View Menu</Button>
-            </div>
-            <div className="mt-8 grid gap-3 sm:grid-cols-3 sm:gap-4">
-              <div className="rounded-[1.75rem] border border-slate-800 bg-slate-900/70 p-4 text-center sm:p-5">
-                <Star className="mx-auto text-orange-400" size={18} />
-                <p className="mt-3 text-sm font-black text-white">4.8 Rating</p>
-                <p className="mt-1 text-xs text-slate-400">Trusted by foodies</p>
+      <section className="mx-auto max-w-7xl px-6 py-16">
+        <div className="mb-8">
+          <p className="text-xs uppercase tracking-[0.35em] text-orange-300">Explore Categories</p>
+          <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">Browse by flavor</h2>
+          <p className="mt-3 text-sm leading-7 text-slate-400">Small category cards help you find the perfect meal quickly.</p>
+        </div>
+        <div className="grid gap-4">
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => { setSelectedCategory(category); setPage("Menu"); }}
+              className="group flex items-center gap-4 overflow-hidden rounded-[1.75rem] border border-slate-800 bg-slate-950 p-4 text-left transition hover:border-orange-500/50"
+            >
+              <img
+                src={categoryImages[category] || categoryImages.Default}
+                alt={category}
+                className="h-24 w-24 rounded-3xl object-cover"
+              />
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-orange-300">{category}</p>
+                <p className="mt-2 text-sm text-slate-400">Explore {category.toLowerCase()}</p>
               </div>
-              <div className="rounded-[1.75rem] border border-slate-800 bg-slate-900/70 p-4 text-center sm:p-5">
-                <Clock className="mx-auto text-orange-400" size={18} />
-                <p className="mt-3 text-sm font-black text-white">25 Min</p>
-                <p className="mt-1 text-xs text-slate-400">Delivery time</p>
-              </div>
-              <div className="rounded-[1.75rem] border border-slate-800 bg-slate-900/70 p-4 text-center sm:p-5">
-                <Bike className="mx-auto text-orange-400" size={18} />
-                <p className="mt-3 text-sm font-black text-white">24/7</p>
-                <p className="mt-1 text-xs text-slate-400">Service available</p>
-              </div>
-            </div>
-          </motion.div>
+            </button>
+          ))}
+        </div>
+      </section>
 
-          <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }} className="relative flex justify-center lg:justify-end">
-            <div className="w-full max-w-[420px]">
-              <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/90 shadow-2xl shadow-orange-500/10">
-                <div className="relative overflow-hidden">
-                  <img className="h-[420px] w-full object-cover" src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?q=80&w=1200&auto=format&fit=crop" alt="Premium meal" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
-                </div>
-                <div className="px-6 py-8 sm:px-8 sm:py-10">
-                  <span className="inline-flex rounded-full bg-orange-500/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.3em] text-orange-300">Premium Deal</span>
-                  <h2 className="mt-5 text-3xl font-black text-white">Chef’s Signature Platter</h2>
-                  <p className="mt-4 text-sm leading-7 text-slate-400">A curated selection of chef-crafted dishes, perfect for a refined meal at home.</p>
-                  <div className="mt-6 flex flex-wrap gap-3">
-                    <span className="rounded-full bg-slate-900/80 px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-slate-200">Rs 1,550</span>
-                    <span className="rounded-full bg-slate-900/80 px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-slate-200">Serves 2</span>
-                  </div>
-                </div>
+      <section className="mx-auto max-w-7xl px-6 py-16">
+        <div className="max-w-3xl">
+          <p className="text-xs uppercase tracking-[0.35em] text-orange-300">FEATURED RESTAURANT</p>
+          <h1 className="mt-4 text-4xl font-black text-white sm:text-5xl">Delicious Meals, Delivered Fast.</h1>
+          <p className="mt-4 text-base leading-7 text-slate-300">Experience premium restaurant dining at home with expertly prepared meals, fast delivery, and elegant presentation.</p>
+        </div>
+
+        <div className="mt-10 space-y-6">
+          <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/90 shadow-2xl shadow-orange-500/10">
+            <div className="aspect-[4/3] w-full overflow-hidden">
+              <img
+                className="h-full w-full object-cover"
+                src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200&auto=format&fit=crop"
+                alt="Premium meal"
+              />
+            </div>
+            <div className="px-6 py-8 sm:px-8 sm:py-10">
+              <span className="inline-flex rounded-full bg-orange-500/15 px-3 py-1 text-xs font-bold uppercase tracking-[0.35em] text-orange-300">Premium Deal</span>
+              <h2 className="mt-5 text-3xl font-black text-white sm:text-4xl">Chef’s Signature Platter</h2>
+              <p className="mt-4 text-sm leading-7 text-slate-400">A curated selection of chef-crafted dishes, perfect for a refined meal at home.</p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <span className="rounded-full bg-slate-900/80 px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-slate-200">Rs 1,550</span>
+                <span className="rounded-full bg-slate-900/80 px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-slate-200">Serves 2</span>
+              </div>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Button onClick={() => setPage("Menu")} className="rounded-full bg-orange-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-orange-500/20 hover:bg-orange-400 sm:px-6 sm:py-4">Order Now</Button>
+                <Button onClick={openCart} variant="outline" className="rounded-full border border-slate-700 bg-slate-950/70 px-5 py-3 text-sm text-slate-100 transition hover:border-orange-500 hover:text-white sm:px-6 sm:py-4">View Cart</Button>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -293,7 +312,6 @@ function HomePage({ setPage, addToCart, openCart, foodItems = [], loadingProduct
             <Card key={item.id} className="overflow-hidden rounded-[1.75rem] border border-slate-800 bg-slate-950 text-white shadow-xl transition hover:-translate-y-1 hover:shadow-2xl">
               <div className="relative overflow-hidden">
                 <img src={item.image} alt={item.name} className="h-56 w-full object-cover" />
-                <div className="absolute left-4 top-4 rounded-full bg-orange-500/90 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-white">Hot</div>
               </div>
               <CardContent className="p-5 sm:p-6">
                 <div className="flex items-start justify-between gap-3">
@@ -316,9 +334,21 @@ function HomePage({ setPage, addToCart, openCart, foodItems = [], loadingProduct
 
       <section className="mx-auto max-w-7xl px-6 py-16">
         <div className="grid gap-6 sm:grid-cols-3">
-          <BannerCard title="Superfast Delivery" subtitle="Track every step in real time." icon={<Bike size={24} className="sm:size-28" />} />
-          <BannerCard title="Chef-Curated Menu" subtitle="Premium dishes made daily." icon={<ChefHat size={24} className="sm:size-28" />} />
-          <BannerCard title="Secure Payments" subtitle="Safe checkout with instant confirmation." icon={<PackageCheck size={24} className="sm:size-28" />} />
+          <div className="rounded-[1.75rem] border border-slate-800 bg-slate-950 p-6 text-center">
+            <Star className="mx-auto text-orange-400" size={22} />
+            <p className="mt-4 text-2xl font-black text-white">4.8 Rating</p>
+            <p className="mt-2 text-sm text-slate-400">Trusted by foodies</p>
+          </div>
+          <div className="rounded-[1.75rem] border border-slate-800 bg-slate-950 p-6 text-center">
+            <Clock className="mx-auto text-orange-400" size={22} />
+            <p className="mt-4 text-2xl font-black text-white">25 Min</p>
+            <p className="mt-2 text-sm text-slate-400">Delivery time</p>
+          </div>
+          <div className="rounded-[1.75rem] border border-slate-800 bg-slate-950 p-6 text-center">
+            <Bike className="mx-auto text-orange-400" size={22} />
+            <p className="mt-4 text-2xl font-black text-white">24/7</p>
+            <p className="mt-2 text-sm text-slate-400">Service available</p>
+          </div>
         </div>
       </section>
 
@@ -330,7 +360,7 @@ function HomePage({ setPage, addToCart, openCart, foodItems = [], loadingProduct
         <div className="grid gap-6 lg:grid-cols-3">
           <ReviewCard author="Ayesha Khan" rating="5.0" feedback="Amazing food and super fast delivery. The packaging felt premium and every bite was flavorful." />
           <ReviewCard author="Bilal Ahmed" rating="4.9" feedback="Best biryani in town. Ordering was effortless and the presentation was exceptional." />
-          <ReviewCard author="Sara Malik" rating="5.0" feedback="Fresh ingredients, speedy delivery, and a dining experience that feels luxurious at home." />
+          <ReviewCard author="Sara Malik" rating="5.0" feedback="Perfect balance of spice and freshness — the ideal order for family dinners." />
         </div>
       </section>
 
