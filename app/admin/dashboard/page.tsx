@@ -15,19 +15,9 @@ const summaryCards = [
   { label: "Cancelled Orders", key: "cancelled_orders", icon: ArrowUpRight },
 ];
 
-const chartCards = [
-  { title: "Weekly Sales", key: "weekly_sales" },
-  { title: "Monthly Sales", key: "monthly_sales" },
-  { title: "Yearly Sales", key: "yearly_sales" },
-];
-
 export default function AdminDashboardPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    loadOrders();
-  }, []);
 
   const loadOrders = async () => {
     setLoading(true);
@@ -36,10 +26,19 @@ export default function AdminDashboardPage() {
     if (!error) setOrders(data || []);
   };
 
-  const today = new Date();
-  const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
+  useEffect(() => {
+    loadOrders();
+  }, []);
 
   const stats = useMemo(() => {
+    const today = new Date();
+    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const thisWeekStart = new Date(startOfToday);
+    thisWeekStart.setDate(thisWeekStart.getDate() - thisWeekStart.getDay());
+    const weeklyBuckets = Array(7).fill(0);
+    const monthlyBuckets = Array.from({ length: 12 }, () => 0);
+    const topProductsMap = {};
+
     const summary = {
       today_orders: 0,
       today_sales: 0,
@@ -47,55 +46,52 @@ export default function AdminDashboardPage() {
       pending_orders: 0,
       completed_orders: 0,
       cancelled_orders: 0,
-      weekly_sales: [],
-      monthly_sales: [],
-      yearly_sales: [],
-      top_products: {},
-      low_products: {},
+      weekly_sales: weeklyBuckets,
+      monthly_sales: monthlyBuckets,
+      yearly_sales: 0,
+      top_products: [],
       recent_orders: [],
     };
 
-    const productCounts = {};
-    const ordersThisWeek = Array(7).fill(0);
-    const ordersThisMonth = Array.from({ length: 12 }, () => 0);
-    let yearlySales = 0;
-
     for (const order of orders) {
       const created = new Date(order.created_at);
-      const dateKey = created.toISOString();
-      const items = typeof order.items === "string" ? JSON.parse(order.items) : order.items || [];
+      const orderTotal = Number(order.total || 0);
+      const orderProfit = Number(order.profit || 0);
 
       if (order.status === "Pending") summary.pending_orders += 1;
       if (order.status === "Delivered") summary.completed_orders += 1;
       if (order.status === "Cancelled") summary.cancelled_orders += 1;
 
-      if (dateKey >= startOfDay) {
+      if (created >= startOfToday) {
         summary.today_orders += 1;
-        summary.today_sales += Number(order.total || 0);
-        summary.today_profit += Number(order.profit || 0);
+        summary.today_sales += orderTotal;
+        summary.today_profit += orderProfit;
       }
 
-      const dayIndex = (today.getDay() + 7 - created.getDay()) % 7;
-      if (dayIndex < 7) ordersThisWeek[6 - dayIndex] += Number(order.total || 0);
-      ordersThisMonth[created.getMonth()] += Number(order.total || 0);
-      yearlySales += Number(order.total || 0);
+      if (created >= thisWeekStart) {
+        const dayIndex = Math.min(6, Math.max(0, created.getDay()));
+        summary.weekly_sales[dayIndex] += orderTotal;
+      }
 
+      summary.monthly_sales[created.getMonth()] += orderTotal;
+      summary.yearly_sales += orderTotal;
+
+      const items = typeof order.items === "string" ? JSON.parse(order.items) : order.items || [];
       for (const item of items) {
-        productCounts[item.name] = (productCounts[item.name] || 0) + Number(item.quantity || 1);
+        topProductsMap[item.name] = (topProductsMap[item.name] || 0) + Number(item.quantity || 1);
       }
     }
 
-    summary.weekly_sales = ordersThisWeek;
-    summary.monthly_sales = ordersThisMonth;
-    summary.yearly_sales = yearlySales;
-
-    const sortedProducts = Object.entries(productCounts).sort((a, b) => b[1] - a[1]);
-    summary.top_products = sortedProducts.slice(0, 5);
-    summary.low_products = sortedProducts.slice(-5).reverse();
+    summary.top_products = Object.entries(topProductsMap)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5);
     summary.recent_orders = orders.slice(0, 6);
 
     return summary;
-  }, [orders, startOfDay, today]);
+  }, [orders]);
+
+  const weeklyMax = Math.max(...stats.weekly_sales, 1);
+  const monthlyMax = Math.max(...stats.monthly_sales, 1);
 
   return (
     <main className="min-h-screen bg-slate-950 px-4 py-12 text-white sm:px-6 lg:px-8">
@@ -104,15 +100,20 @@ export default function AdminDashboardPage() {
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h1 className="text-5xl font-black">POS Dashboard</h1>
-              <p className="mt-2 text-slate-400">Sales summary, orders, and top product insights.</p>
+              <p className="mt-2 text-slate-400">Live sales overview, performance metrics, and recent activity.</p>
             </div>
-            <Button onClick={loadOrders} className="rounded-full bg-orange-500 px-6 py-3 text-sm text-white hover:bg-orange-400">Refresh</Button>
+            <Button onClick={loadOrders} className="rounded-full bg-orange-500 px-6 py-3 text-sm text-white hover:bg-orange-400">
+              Refresh
+            </Button>
           </div>
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {summaryCards.map((card) => {
             const Icon = card.icon;
+            const value = card.key.includes("sales") || card.key.includes("profit")
+              ? `Rs ${Math.round(stats[card.key] || 0)}`
+              : stats[card.key];
             return (
               <div key={card.key} className="rounded-[2rem] border border-slate-800 bg-slate-900 p-6">
                 <div className="flex items-center gap-4">
@@ -121,16 +122,48 @@ export default function AdminDashboardPage() {
                   </div>
                   <div>
                     <p className="text-sm uppercase tracking-[0.25em] text-slate-500">{card.label}</p>
-                    <p className="mt-2 text-3xl font-black text-white">
-                      {card.key.includes("sales") || card.key.includes("profit")
-                        ? `Rs ${Math.round(stats[card.key] || 0)}`
-                        : stats[card.key] || 0}
-                    </p>
+                    <p className="mt-2 text-3xl font-black text-white">{value}</p>
                   </div>
                 </div>
               </div>
             );
           })}
+        </div>
+
+        <div className="grid gap-6 xl:grid-cols-2">
+          <div className="rounded-[2rem] border border-slate-800 bg-slate-900 p-6">
+            <h2 className="text-2xl font-black text-white">Weekly Sales</h2>
+            <div className="mt-6 space-y-4">
+              {stats.weekly_sales.map((amount, index) => (
+                <div key={index} className="space-y-1">
+                  <div className="flex items-center justify-between text-sm text-slate-400">
+                    <span>{["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][index]}</span>
+                    <span>Rs {Math.round(amount)}</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-slate-800">
+                    <div className="h-full rounded-full bg-orange-500" style={{ width: `${Math.round((amount / weeklyMax) * 100)}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[2rem] border border-slate-800 bg-slate-900 p-6">
+            <h2 className="text-2xl font-black text-white">Monthly Sales</h2>
+            <div className="mt-6 space-y-4">
+              {stats.monthly_sales.map((amount, index) => (
+                <div key={index} className="space-y-1">
+                  <div className="flex items-center justify-between text-sm text-slate-400">
+                    <span>{new Date(0, index).toLocaleString("en-US", { month: "short" })}</span>
+                    <span>Rs {Math.round(amount)}</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-slate-800">
+                    <div className="h-full rounded-full bg-sky-500" style={{ width: `${Math.round((amount / monthlyMax) * 100)}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className="grid gap-6 xl:grid-cols-2">
@@ -145,71 +178,33 @@ export default function AdminDashboardPage() {
                   </div>
                 ))
               ) : (
-                <p className="text-slate-400">No data available yet.</p>
+                <p className="text-slate-400">No product data yet.</p>
               )}
             </div>
           </div>
 
           <div className="rounded-[2rem] border border-slate-800 bg-slate-900 p-6">
-            <h2 className="text-2xl font-black text-white">Low Selling Products</h2>
+            <h2 className="text-2xl font-black text-white">Recent Orders</h2>
             <div className="mt-6 space-y-3">
-              {stats.low_products.length > 0 ? (
-                stats.low_products.map(([name, count]) => (
-                  <div key={name} className="flex items-center justify-between rounded-3xl border border-slate-800 bg-slate-950 px-4 py-3">
-                    <span className="text-slate-200">{name}</span>
-                    <span className="text-slate-400">{count} sold</span>
+              {stats.recent_orders.length > 0 ? (
+                stats.recent_orders.map((order) => (
+                  <div key={order.id} className="rounded-3xl border border-slate-800 bg-slate-950 px-4 py-3">
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <p className="font-semibold text-white">#{order.id}</p>
+                        <p className="text-sm text-slate-400">{order.customer_name || "Walk-in"}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-white">Rs {order.total}</p>
+                        <p className="text-sm text-slate-400">{order.status}</p>
+                      </div>
+                    </div>
                   </div>
                 ))
               ) : (
-                <p className="text-slate-400">No data available yet.</p>
+                <p className="text-slate-400">No recent orders yet.</p>
               )}
             </div>
-          </div>
-        </div>
-
-        <div className="grid gap-6 xl:grid-cols-2">
-          {chartCards.map((chart) => (
-            <div key={chart.key} className="rounded-[2rem] border border-slate-800 bg-slate-900 p-6">
-              <h2 className="text-2xl font-black text-white">{chart.title}</h2>
-              <div className="mt-6 h-48 rounded-[1.5rem] border border-slate-800 bg-slate-950 p-4 text-slate-400">
-                <p>Chart placeholder</p>
-                <p className="text-sm text-slate-500">Sales visualization can be added using a chart library.</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="rounded-[2rem] border border-slate-800 bg-slate-900 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-black text-white">Recent Orders</h2>
-              <p className="mt-1 text-sm text-slate-400">Latest order activity from your store.</p>
-            </div>
-            <span className="rounded-full bg-slate-950 px-4 py-2 text-sm text-slate-300">{orders.length} orders</span>
-          </div>
-          <div className="mt-6 overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-800 text-left text-sm text-slate-300">
-              <thead>
-                <tr>
-                  <th className="px-4 py-3">Order ID</th>
-                  <th className="px-4 py-3">Customer</th>
-                  <th className="px-4 py-3">Total</th>
-                  <th className="px-4 py-3">Profit</th>
-                  <th className="px-4 py-3">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800">
-                {stats.recent_orders.map((order) => (
-                  <tr key={order.id} className="hover:bg-slate-950/70">
-                    <td className="px-4 py-3">{order.id}</td>
-                    <td className="px-4 py-3">{order.customer_name}</td>
-                    <td className="px-4 py-3">Rs {order.total}</td>
-                    <td className="px-4 py-3">Rs {order.profit || 0}</td>
-                    <td className="px-4 py-3">{order.status}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
         </div>
       </div>
