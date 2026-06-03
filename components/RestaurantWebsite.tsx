@@ -1002,7 +1002,7 @@ function ContactPage() {
             <Mail className="text-orange-500" />
           </div>
           <h3 className="mt-4 font-black text-white">Email</h3>
-          <p className="mt-2 text-slate-400">orders@spicebite.com</p>
+          <p className="mt-2 text-slate-400">orders@flafe.com</p>
         </div>
         <div className="rounded-[2rem] border border-slate-800 bg-slate-900 p-8">
           <div className="grid h-12 w-12 place-items-center rounded-2xl bg-orange-500/20">
@@ -1040,7 +1040,7 @@ function FAQPage() {
     <section className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <h1 className="text-5xl font-black text-white">Frequently Asked</h1>
-        <p className="mt-3 text-slate-400">Get answers to common questions about SpiceBite</p>
+        <p className="mt-3 text-slate-400">Get answers to common questions about Flafe</p>
       </motion.div>
 
       <div className="mt-10 space-y-4">
@@ -1268,7 +1268,7 @@ function Footer({ setPage }) {
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-8 md:grid-cols-4">
           <div>
-            <h3 className="text-xl font-black text-white">SpiceBite</h3>
+            <h3 className="text-xl font-black text-white">Flafe</h3>
             <p className="mt-2 text-sm text-slate-500">Modern restaurant, delicious food, fast delivery.</p>
           </div>
           <div>
@@ -1295,7 +1295,7 @@ function Footer({ setPage }) {
           </div>
         </div>
         <div className="mt-8 border-t border-slate-800 pt-6 text-center text-sm text-slate-500">
-          <p>© 2024 SpiceBite. All rights reserved.</p>
+          <p>© 2024 Flafe. All rights reserved.</p>
         </div>
       </div>
     </footer>
