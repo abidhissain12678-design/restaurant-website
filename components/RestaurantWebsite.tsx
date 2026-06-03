@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Award, Bike, ChefHat, Clock, Heart, Image, Mail, MessageCircle, Minus, Plus, Search, ShoppingCart, Star, Trash2, Phone, PackageCheck, MapPin } from "lucide-react";
 import { Button, Card, CardContent } from "@/components/ui";
@@ -210,6 +211,9 @@ function RestaurantWebsite() {
 
           <div className="flex items-center justify-end gap-2 sm:gap-3">
             <PWAInstallPrompt />
+            <Link href="/menu-table" className="rounded-full bg-slate-800 px-4 py-2 text-xs font-semibold text-slate-100 shadow-lg shadow-black/20 transition hover:bg-slate-700 sm:px-5 sm:py-3 sm:text-sm">
+              Menu Table
+            </Link>
             <Button onClick={openCart} className="rounded-full bg-orange-500 px-4 py-2 text-xs text-white shadow-lg shadow-orange-500/20 hover:bg-orange-400 sm:px-5 sm:py-3 sm:text-sm">
               <ShoppingCart size={16} className="sm:size-18" /> <span className="hidden sm:inline">Cart</span> {cartCount > 0 && <span className="ml-1 rounded-full bg-slate-950 px-2 py-0.5 text-xs font-bold text-white sm:ml-2 sm:px-3 sm:py-1">{cartCount}</span>}
             </Button>
