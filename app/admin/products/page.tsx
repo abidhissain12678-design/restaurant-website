@@ -27,11 +27,16 @@ export default function AdminProductsPage() {
 
   const loadProducts = async () => {
     setLoading(true);
-   const { data, error } = await (
-  supabase.from("products").select("*") as any
-).order("created_at", { ascending: false });
+    setMessage("");
+    const { data, error } = await (
+      supabase.from("products").select("*") as any
+    ).order("created_at", { ascending: false });
     setLoading(false);
-    if (!error) setProducts(data || []);
+    if (error) {
+      setMessage(`Failed to load products: ${error.message}`);
+    } else {
+      setProducts(data || []);
+    }
   };
 
   useEffect(() => {
@@ -45,6 +50,7 @@ export default function AdminProductsPage() {
   const resetForm = () => {
     setForm(initialForm);
     setEditingId(null);
+    setMessage("");
   };
 
   const handleEdit = (product) => {
@@ -61,12 +67,14 @@ export default function AdminProductsPage() {
       prep: product.prep || "20 min",
       popular: !!product.popular,
     });
+    setMessage("");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleSave = async (event) => {
     event.preventDefault();
     setLoading(true);
+    setMessage("");
     const payload = {
       name: form.name,
       category: form.category,
@@ -82,25 +90,39 @@ export default function AdminProductsPage() {
       created_at: new Date().toISOString(),
     };
 
+    let error = null;
+
     if (editingId) {
-      await supabase.from("products").update(payload).eq("id", editingId);
-      setMessage("Product updated.");
+      const response = await supabase.from("products").update(payload).eq("id", editingId).select();
+      error = response.error;
+      if (!error) setMessage("Product updated.");
     } else {
-      await supabase.from("products").insert([payload]);
-      setMessage("Product added.");
+      const response = await supabase.from("products").insert([payload]).select();
+      error = response.error;
+      if (!error) setMessage("Product added.");
+    }
+
+    if (error) {
+      setMessage(`Error saving product: ${error.message}`);
+    } else {
+      resetForm();
+      loadProducts();
     }
 
     setLoading(false);
-    resetForm();
-    loadProducts();
   };
 
   const handleDelete = async (id) => {
     setLoading(true);
-    await supabase.from("products").delete().eq("id", id);
+    setMessage("");
+    const { error } = await supabase.from("products").delete().eq("id", id);
     setLoading(false);
-    setMessage("Product deleted.");
-    loadProducts();
+    if (error) {
+      setMessage(`Error deleting product: ${error.message}`);
+    } else {
+      setMessage("Product deleted.");
+      loadProducts();
+    }
   };
 
   return (
