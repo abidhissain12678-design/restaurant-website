@@ -156,6 +156,7 @@ const pizzaSizes: Array<"S" | "M" | "L" | "XL"> = ["S", "M", "L", "XL"];
 
 export default function MenuTablePage() {
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   const addToCart = (name: string, price: number, category: string, size?: string) => {
     setCart((current) => {
@@ -172,7 +173,17 @@ export default function MenuTablePage() {
     setCart((current) => current.filter((item) => item.id !== id));
   };
 
-  const clearCart = () => setCart([]);
+  const clearCart = () => {
+    setCart([]);
+    setCheckoutOpen(false);
+  };
+
+  const placeOrder = () => {
+    if (cart.length === 0) return;
+    setCart([]);
+    setCheckoutOpen(false);
+    window.alert("Order placed successfully!");
+  };
 
   const cartTotal = useMemo(() => cart.reduce((sum, item) => sum + item.price * item.qty, 0), [cart]);
   const cartCount = useMemo(() => cart.reduce((sum, item) => sum + item.qty, 0), [cart]);
@@ -383,7 +394,7 @@ export default function MenuTablePage() {
                   <Button
                     onClick={() => {
                       if (cart.length === 0) return;
-                      // Placeholder: implement checkout flow here
+                      setCheckoutOpen(true);
                     }}
                     disabled={cart.length === 0}
                     className="rounded-full bg-orange-500 px-4 py-3 text-sm font-semibold text-white hover:bg-orange-400 disabled:opacity-50"
@@ -393,6 +404,36 @@ export default function MenuTablePage() {
                 </div>
               </CardContent>
             </Card>
+            {checkoutOpen && (
+              <Card className="mt-6 rounded-3xl border border-orange-500/20 bg-slate-900 p-6">
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <p className="text-sm uppercase tracking-[0.35em] text-orange-400">Checkout</p>
+                      <h2 className="mt-2 text-2xl font-black text-white">Review your order</h2>
+                    </div>
+                    <div className="rounded-3xl border border-slate-800 bg-slate-950 p-4 text-sm text-slate-200">
+                      <div className="flex justify-between text-slate-400">
+                        <span>Items</span>
+                        <span>{cartCount}</span>
+                      </div>
+                      <div className="mt-3 flex justify-between text-white">
+                        <span>Subtotal</span>
+                        <span>Rs {cartTotal}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-3">
+                      <Button onClick={placeOrder} className="rounded-full bg-orange-500 px-4 py-3 text-sm font-semibold text-white hover:bg-orange-400">
+                        Place Order
+                      </Button>
+                      <Button onClick={() => setCheckoutOpen(false)} variant="outline" className="rounded-full px-4 py-3 text-sm font-semibold">
+                        Back to Cart
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </aside>
         </div>
       </div>

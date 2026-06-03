@@ -365,6 +365,11 @@ function HomePage({ setPage, setSelectedCategory, addToCart, openCart, foodItems
                 />
               ))}
             </div>
+            <div className="mt-8 flex justify-center">
+              <Link href="/menu-table" className="inline-flex items-center justify-center rounded-full bg-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-orange-500/20 hover:bg-orange-400">
+                View Full Menu Table
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -397,6 +402,11 @@ function HomePage({ setPage, setSelectedCategory, addToCart, openCart, foodItems
               </CardContent>
             </Card>
           ))}
+        </div>
+        <div className="mt-10 flex justify-center">
+          <Link href="/menu-table" className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-orange-500/10 hover:bg-slate-100">
+            Explore the full menu table
+          </Link>
         </div>
       </section>
 
