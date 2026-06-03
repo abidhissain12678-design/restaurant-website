@@ -379,7 +379,15 @@ export default function MenuTablePage() {
                   <Button onClick={clearCart} variant="outline" className="rounded-full px-4 py-3 text-sm font-semibold">
                     Clear Cart
                   </Button>
-                  <Button disabled={cart.length === 0} className="rounded-full bg-orange-500 px-4 py-3 text-sm font-semibold text-white hover:bg-orange-400 disabled:opacity-50">
+                  
+                  <Button
+                    onClick={() => {
+                      if (cart.length === 0) return;
+                      // Placeholder: implement checkout flow here
+                    }}
+                    disabled={cart.length === 0}
+                    className="rounded-full bg-orange-500 px-4 py-3 text-sm font-semibold text-white hover:bg-orange-400 disabled:opacity-50"
+                  >
                     Proceed to Checkout
                   </Button>
                 </div>

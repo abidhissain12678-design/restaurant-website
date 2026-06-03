@@ -1009,7 +1009,7 @@ function ContactPage() {
             <MapPin className="text-orange-500" />
           </div>
           <h3 className="mt-4 font-black text-white">Address</h3>
-          <p className="mt-2 text-slate-400">Main Food Street, Faisalabad</p>
+          <p className="mt-2 text-slate-400">Main Food Street, Zafarwal,Dhamthal</p>
         </div>
       </div>
 
