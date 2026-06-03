@@ -186,7 +186,7 @@ function RestaurantWebsite() {
   const loadMore = () => setMenuPageNum((p) => p + 1);
 
   return (
-    <div className="bg-slate-950 text-slate-100">
+    <div className="bg-slate-950 text-slate-100 overflow-x-hidden">
       <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/95 backdrop-blur-xl">
         <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-4 px-4 py-3 sm:px-6 lg:px-8 lg:py-4">
           <button onClick={() => setPage("Home")} className="flex items-center gap-2 text-lg font-black tracking-tight text-white sm:gap-3 sm:text-xl">
@@ -371,13 +371,13 @@ function HomePage({ setPage, setSelectedCategory, addToCart, openCart, foodItems
           <h2 className="mt-4 text-4xl font-black text-white sm:text-5xl">Customer favorites</h2>
           <p className="mt-4 text-sm leading-7 text-slate-400">A refined selection of top dishes designed for premium taste and effortless ordering.</p>
         </div>
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {popular.map((item) => (
-            <Card key={item.id} className="overflow-hidden rounded-[1.75rem] border border-slate-800 bg-slate-950 text-white shadow-xl transition hover:-translate-y-1 hover:shadow-2xl">
-              <div className="relative overflow-hidden">
-                <img src={item.image} alt={item.name} className="h-56 w-full object-cover" />
+            <Card key={item.id} className="w-full overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 text-white shadow-xl transition hover:-translate-y-1 hover:shadow-2xl">
+              <div className="relative h-56 w-full overflow-hidden bg-slate-100">
+                <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
               </div>
-              <CardContent className="p-5 sm:p-6">
+              <CardContent className="p-5">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h3 className="text-base font-black text-white sm:text-xl">{item.name}</h3>
@@ -385,7 +385,7 @@ function HomePage({ setPage, setSelectedCategory, addToCart, openCart, foodItems
                   </div>
                   <span className="rounded-full bg-slate-900 px-3 py-1.5 text-xs font-black text-orange-400 sm:px-4 sm:py-2 sm:text-sm">Rs {item.price}</span>
                 </div>
-                <p className="mt-4 text-sm leading-6 text-slate-900 line-clamp-2">{item.description}</p>
+                <p className="mt-4 text-sm leading-6 text-slate-900 line-clamp-3">{item.description}</p>
                 <div className="mt-6 flex items-center justify-between gap-3">
                   <span className="flex items-center gap-1.5 text-sm text-slate-500"><Star className="text-orange-400" size={14} /> {item.rating}</span>
                   <Button onClick={() => addToCart(item)} className="rounded-full bg-orange-500 px-4 py-2 text-sm text-white hover:bg-orange-400">Add</Button>
@@ -495,23 +495,21 @@ function MenuPage({ search, setSearch, selectedCategory, setSelectedCategory, ca
         <div className="grid gap-4 lg:grid-cols-12 lg:gap-6">
           <div className="lg:col-span-9">
             {isLoading ? (
-              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {Array.from({ length: 12 }).map((_, i) => (
                   <SkeletonCard key={i} />
                 ))}
               </div>
             ) : items.length > 0 ? (
-              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {items.map((item) => (
-                  <motion.div key={item.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} whileHover={{ y: -4 }} className="">
-                    <Card className="overflow-hidden rounded-[1.25rem] border border-slate-800 bg-slate-950 text-white shadow transition-transform hover:scale-[1.01] hover:shadow-2xl h-full flex flex-col">
-                      <div className="relative overflow-hidden bg-slate-900">
-                        <div className="aspect-[4/3] w-full overflow-hidden">
-                          <img src={item.image} alt={item.name} className="h-full w-full object-cover transition duration-500" />
-                        </div>
+                  <motion.div key={item.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} whileHover={{ y: -4 }} className="w-full">
+                    <Card className="w-full overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 text-white shadow transition-transform hover:scale-[1.01] hover:shadow-2xl h-full flex flex-col">
+                      <div className="relative h-56 w-full overflow-hidden bg-slate-100">
+                        <img src={item.image} alt={item.name} className="h-full w-full object-cover transition duration-500" />
                         {item.popular && <div className="absolute right-2 top-2 rounded-full bg-orange-500 px-2.5 py-1 text-xs font-bold text-white sm:right-3 sm:top-3 sm:px-3">Popular</div>}
                       </div>
-                      <CardContent className="flex flex-1 flex-col p-4 sm:p-5">
+                      <CardContent className="flex flex-1 flex-col p-5">
                         <div className="flex items-start justify-between gap-2 sm:gap-3">
                           <div className="min-w-0 flex-1">
                             <h3 className="text-sm font-black truncate sm:text-base">{item.name}</h3>
@@ -522,7 +520,7 @@ function MenuPage({ search, setSearch, selectedCategory, setSelectedCategory, ca
                             <div className="text-xs text-slate-700">{item.prep}</div>
                           </div>
                         </div>
-                       <p className="mt-2 flex-1 text-xs text-slate-700 line-clamp-2 sm:mt-3 sm:text-sm sm:line-clamp-3">{item.description}</p>
+                       <p className="mt-2 flex-1 text-xs text-slate-700 line-clamp-3 sm:mt-3 sm:text-sm">{item.description}</p>
                         <div className="mt-3 flex items-center gap-2 sm:mt-4">
                           <Button onClick={() => addToCart(item)} className="rounded-full bg-orange-500 px-3 py-1.5 text-xs text-white hover:bg-orange-400 sm:px-3 sm:py-2 sm:text-sm">Add</Button>
                           <Button variant="outline" onClick={() => openQuickView(item)} className="rounded-full px-3 py-1.5 text-xs sm:px-3 sm:py-2 sm:text-sm">View</Button>
@@ -591,7 +589,7 @@ function CategoriesPage({ setPage, setSelectedCategory, categories = [] }) {
         <h1 className="text-4xl font-black text-white sm:text-5xl">All Categories</h1>
         <p className="mt-2 text-xs text-slate-400 sm:mt-3 sm:text-base">Explore every food type at a glance and find your favorite.</p>
       </motion.div>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-6">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {categories.filter((cat) => cat !== "All").map((cat, index) => {
           const img = categoryImages[cat] || categoryImages.Default;
           return (
@@ -606,8 +604,8 @@ function CategoriesPage({ setPage, setSelectedCategory, categories = [] }) {
               }}
               className="group overflow-hidden rounded-[1.5rem] border border-slate-800 bg-slate-950 text-white transition hover:border-orange-500/50 sm:rounded-[2rem]"
             >
-              <div className="relative overflow-hidden bg-slate-900">
-                <img src={img} alt={cat} className="h-40 w-full object-cover transition duration-500 group-hover:scale-110 sm:h-56" />
+              <div className="relative h-56 w-full overflow-hidden bg-white">
+                <img src={img} alt={cat} className="h-full w-full object-contain bg-white transition duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/0" />
               </div>
               <div className="relative px-4 py-6 sm:px-6 sm:py-8">
