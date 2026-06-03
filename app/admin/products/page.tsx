@@ -93,11 +93,11 @@ export default function AdminProductsPage() {
     let error = null;
 
     if (editingId) {
-      const response = await supabase.from("products").update(payload).eq("id", editingId).select();
+      const response = await supabase.from("products").update(payload).eq("id", editingId);
       error = response.error;
       if (!error) setMessage("Product updated.");
     } else {
-      const response = await supabase.from("products").insert([payload]).select();
+      const response = await supabase.from("products").insert([payload]);
       error = response.error;
       if (!error) setMessage("Product added.");
     }

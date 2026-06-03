@@ -6,7 +6,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Award, Bike, ChefHat, Clock, Heart, Image, Mail, MessageCircle, Minus, Plus, Search, ShoppingCart, Star, Trash2, Phone, PackageCheck, MapPin } from "lucide-react";
 import { Button, Card, CardContent } from "@/components/ui";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
-import { categories } from "@/data/foodData";
 import { supabase } from "@/lib/supabase";
 
 const galleryImages = [
@@ -129,6 +128,13 @@ function RestaurantWebsite() {
     return sum + (Number(item.price || 0) - cost) * Number(item.qty || 1);
   }, 0);
 
+  const availableCategories = useMemo(() => {
+    const categoriesFromProducts = Array.from(
+      new Set(foodItems.map((item) => item.category).filter(Boolean))
+    );
+    return ["All", ...categoriesFromProducts.filter((category) => category !== "All")];
+  }, [foodItems]);
+
   const filteredItems = useMemo(() => {
     return foodItems.filter((item) => {
       const matchesCategory = selectedCategory === "All" || item.category === selectedCategory;
@@ -219,6 +225,7 @@ function RestaurantWebsite() {
             setSearch={setSearch}
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
+            categories={availableCategories}
             items={displayedItems}
             addToCart={addToCart}
             isLoading={isLoading || loadingProducts}
@@ -230,7 +237,13 @@ function RestaurantWebsite() {
             total={total}
           />
         )}
-        {page === "Categories" && <CategoriesPage setPage={setPage} setSelectedCategory={setSelectedCategory} />}
+        {page === "Categories" && (
+          <CategoriesPage
+            setPage={setPage}
+            setSelectedCategory={setSelectedCategory}
+            categories={availableCategories}
+          />
+        )}
         {page === "Checkout" && <CheckoutPage total={total} delivery={delivery} subtotal={subtotal} profit={profit} cart={cart} setPage={setPage} clearCart={() => setCart([])} addOrderToHistory={addOrderToHistory} />}
         {page === "My Orders" && <MyOrdersPage userOrders={userOrders} setPage={setPage} setTrackingId={setTrackingId} />}
         {page === "Track Order" && <TrackingPage trackingId={trackingId} setTrackingId={setTrackingId} />}
@@ -432,7 +445,7 @@ function HomePage({ setPage, setSelectedCategory, addToCart, openCart, foodItems
   );
 }
 
-function MenuPage({ search, setSearch, selectedCategory, setSelectedCategory, items = [], addToCart, isLoading, loadMore, hasMore, openQuickView, cart, subtotal, total }) {
+function MenuPage({ search, setSearch, selectedCategory, setSelectedCategory, categories = [], items = [], addToCart, isLoading, loadMore, hasMore, openQuickView, cart, subtotal, total }) {
   return (
     <div className="bg-slate-950 pb-20 sm:pb-8">
       <section className="border-b border-slate-800 bg-slate-950/95 px-4 py-3 backdrop-blur-xl sm:px-6 lg:px-8 lg:py-4">
@@ -560,7 +573,7 @@ function MenuPage({ search, setSearch, selectedCategory, setSelectedCategory, it
   );
 }
 
-function CategoriesPage({ setPage, setSelectedCategory }) {
+function CategoriesPage({ setPage, setSelectedCategory, categories = [] }) {
   const categoryImages = {
     Pizza: "https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=1200&auto=format&fit=crop",
     Burger: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?q=80&w=1200&auto=format&fit=crop",
@@ -569,6 +582,7 @@ function CategoriesPage({ setPage, setSelectedCategory }) {
     Drinks: "https://images.unsplash.com/photo-1544145945-f90425340c7e?q=80&w=1200&auto=format&fit=crop",
     Desserts: "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?q=80&w=1200&auto=format&fit=crop",
     Deals: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?q=80&w=1200&auto=format&fit=crop",
+    Default: "https://images.unsplash.com/photo-1498575207497-1dce7f9f7e08?q=80&w=800&auto=format&fit=crop",
   };
 
   return (
@@ -578,29 +592,32 @@ function CategoriesPage({ setPage, setSelectedCategory }) {
         <p className="mt-2 text-xs text-slate-400 sm:mt-3 sm:text-base">Explore every food type at a glance and find your favorite.</p>
       </motion.div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-6">
-        {Object.entries(categoryImages).map(([cat, img], index) => (
-          <motion.button
-            key={cat}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            onClick={() => {
-              setSelectedCategory(cat);
-              setPage("Menu");
-            }}
-            className="group overflow-hidden rounded-[1.5rem] border border-slate-800 bg-slate-950 text-white transition hover:border-orange-500/50 sm:rounded-[2rem]"
-          >
-            <div className="relative overflow-hidden bg-slate-900">
-              <img src={img} alt={cat} className="h-40 w-full object-cover transition duration-500 group-hover:scale-110 sm:h-56" />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/0" />
-            </div>
-            <div className="relative px-4 py-6 sm:px-6 sm:py-8">
-              <h3 className="text-xl font-black sm:text-2xl">{cat}</h3>
-              <p className="mt-1 text-xs text-slate-400 sm:mt-2 sm:text-base">Explore {cat.toLowerCase()}</p>
-              <ArrowRight className="absolute right-4 top-1/2 -translate-y-1/2 transition duration-300 group-hover:translate-x-1 group-hover:text-orange-500 sm:right-6" size={20} />
-            </div>
-          </motion.button>
-        ))}
+        {categories.filter((cat) => cat !== "All").map((cat, index) => {
+          const img = categoryImages[cat] || categoryImages.Default;
+          return (
+            <motion.button
+              key={cat}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              onClick={() => {
+                setSelectedCategory(cat);
+                setPage("Menu");
+              }}
+              className="group overflow-hidden rounded-[1.5rem] border border-slate-800 bg-slate-950 text-white transition hover:border-orange-500/50 sm:rounded-[2rem]"
+            >
+              <div className="relative overflow-hidden bg-slate-900">
+                <img src={img} alt={cat} className="h-40 w-full object-cover transition duration-500 group-hover:scale-110 sm:h-56" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/0" />
+              </div>
+              <div className="relative px-4 py-6 sm:px-6 sm:py-8">
+                <h3 className="text-xl font-black sm:text-2xl">{cat}</h3>
+                <p className="mt-1 text-xs text-slate-400 sm:mt-2 sm:text-base">Explore {cat.toLowerCase()}</p>
+                <ArrowRight className="absolute right-4 top-1/2 -translate-y-1/2 transition duration-300 group-hover:translate-x-1 group-hover:text-orange-500 sm:right-6" size={20} />
+              </div>
+            </motion.button>
+          );
+        })}
       </div>
     </section>
   );
