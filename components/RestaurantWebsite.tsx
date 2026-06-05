@@ -4,7 +4,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, Award, Bike, ChefHat, Clock, Heart, Image, Mail, MessageCircle, Minus, Plus, Search, ShoppingCart, Star, Trash2, Phone, PackageCheck, MapPin } from "lucide-react";
+import { ArrowRight, Award, Bike, ChefHat, Clock, Heart, Image, Mail, MessageCircle, Minus, Plus, Search, ShoppingCart, Star, Trash2, Phone, PackageCheck, MapPin, Menu, X } from "lucide-react";
 import { Button, Card, CardContent } from "@/components/ui";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import { supabase } from "@/lib/supabase";
@@ -72,6 +72,7 @@ function RestaurantWebsite() {
   const [cart, setCart] = useState([]);
   const [trackingId, setTrackingId] = useState("");
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [foodItems, setFoodItems] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [userOrders, setUserOrders] = useState([]);
@@ -179,6 +180,8 @@ function RestaurantWebsite() {
   const navItems = ["Home", "Menu", "Categories", "My Orders", "Track Order", "About", "Contact", "FAQ"];
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
+  const toggleMenu = () => setIsMenuOpen((value) => !value);
+  const closeMenu = () => setIsMenuOpen(false);
   const openQuickView = (item) => setSelectedItem(item);
   const closeQuickView = () => setSelectedItem(null);
   const loadMore = () => setMenuPageNum((p) => p + 1);
@@ -210,6 +213,14 @@ function RestaurantWebsite() {
               <span className="hidden sm:inline">Cart</span>
               {cartCount > 0 && <span className="ml-2 rounded-full bg-slate-900 px-2 py-0.5 text-xs font-bold text-white">{cartCount}</span>}
             </Button>
+            <button
+              type="button"
+              onClick={toggleMenu}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-900 shadow-sm transition hover:bg-rose-50"
+              aria-label="Open menu"
+            >
+              <Menu size={20} />
+            </button>
           </div>
         </div>
       </header>
@@ -261,6 +272,7 @@ function RestaurantWebsite() {
         onCheckout={() => { setPage("Checkout"); closeCart(); }}
       />
 
+      <HamburgerMenu open={isMenuOpen} onClose={closeMenu} setPage={(pageName) => { setPage(pageName); closeMenu(); }} />
       <QuickViewModal item={selectedItem} onClose={closeQuickView} addToCart={addToCart} />
 
       <MobileNav page={page} setPage={setPage} openCart={openCart} />
@@ -1256,7 +1268,7 @@ function QuickViewModal({ item, onClose, addToCart }) {
 }
 
 function MobileNav({ page, setPage, openCart }) {
-  const mobileItems = ["Home", "Menu", "Categories", "Track"];
+  const mobileItems = ["Home", "Menu"];
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-rose-200 bg-white/95 px-3 py-3 shadow-xl shadow-rose-100 md:hidden">
@@ -1264,9 +1276,9 @@ function MobileNav({ page, setPage, openCart }) {
         {mobileItems.map((item) => (
           <button
             key={item}
-            onClick={() => setPage(item === "Track" ? "Track Order" : item)}
+            onClick={() => setPage(item)}
             className={`flex-1 rounded-3xl px-3 py-2 text-xs font-semibold transition ${
-              page === item || (item === "Track" && page === "Track Order") ? "bg-[#ff3b4f] text-white shadow-lg shadow-rose-300/40" : "bg-rose-50 text-slate-700 hover:bg-rose-100"
+              page === item ? "bg-[#ff3b4f] text-white shadow-lg shadow-rose-300/40" : "bg-rose-50 text-slate-700 hover:bg-rose-100"
             }`}
           >
             {item}
@@ -1280,6 +1292,65 @@ function MobileNav({ page, setPage, openCart }) {
         </button>
       </div>
     </div>
+  );
+}
+
+function HamburgerMenu({ open, onClose, setPage }) {
+  const menuItems = ["Home", "Menu", "Categories", "Track Order", "My Orders", "About", "Contact", "FAQ"];
+
+  return (
+    <AnimatePresence>
+      {open ? (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 z-40 bg-slate-950/80 backdrop-blur-sm"
+          />
+          <motion.aside
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", stiffness: 260, damping: 25 }}
+            className="fixed right-0 top-0 z-50 h-full w-full max-w-xs bg-slate-950 p-6 text-slate-100 shadow-2xl sm:max-w-sm"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.35em] text-orange-400">Flafe Menu</p>
+                <h2 className="mt-2 text-xl font-black text-white">Navigation</h2>
+              </div>
+              <button onClick={onClose} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-800 bg-slate-900 text-slate-100 transition hover:bg-slate-800">
+                <X size={20} />
+              </button>
+            </div>
+            <div className="mt-8 space-y-3">
+              {menuItems.map((item) => (
+                <button
+                  key={item}
+                  onClick={() => setPage(item)}
+                  className="flex w-full items-center justify-between rounded-3xl border border-slate-800 bg-slate-900 px-4 py-4 text-left text-sm font-semibold text-slate-100 transition hover:bg-slate-800"
+                >
+                  <span>{item}</span>
+                  <span className="text-slate-500">›</span>
+                </button>
+              ))}
+            </div>
+            <div className="mt-8 rounded-3xl border border-slate-800 bg-slate-900 p-4">
+              <p className="text-xs uppercase tracking-[0.35em] text-slate-500">Install App</p>
+              <button
+                type="button"
+                onClick={onClose}
+                className="mt-3 w-full rounded-full bg-orange-400 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-orange-300"
+              >
+                Install App
+              </button>
+            </div>
+          </motion.aside>
+        </>
+      ) : null}
+    </AnimatePresence>
   );
 }
 
