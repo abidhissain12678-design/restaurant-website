@@ -60,6 +60,8 @@ const heroSlides = [
   },
 ];
 
+const appCategories = ["All", "Burger", "Pizza", "Deals", "Biryani", "Fast Food", "Drinks", "Desserts"];
+
 function RestaurantWebsite() {
   const [page, setPage] = useState("Home");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -129,12 +131,7 @@ function RestaurantWebsite() {
     return sum + (Number(item.price || 0) - cost) * Number(item.qty || 1);
   }, 0);
 
-  const availableCategories = useMemo(() => {
-    const categoriesFromProducts = Array.from(
-      new Set(foodItems.map((item) => item.category).filter(Boolean))
-    );
-    return ["All", ...categoriesFromProducts.filter((category) => category !== "All")];
-  }, [foodItems]);
+  const availableCategories = useMemo(() => appCategories, []);
 
   const filteredItems = useMemo(() => {
     return foodItems.filter((item) => {
@@ -187,42 +184,38 @@ function RestaurantWebsite() {
   const loadMore = () => setMenuPageNum((p) => p + 1);
 
   return (
-    <div className="bg-slate-950 text-slate-100 overflow-x-hidden">
-      <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/95 backdrop-blur-xl">
-        <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-4 px-4 py-3 sm:px-6 lg:px-8 lg:py-4">
-          <button onClick={() => setPage("Home")} className="flex items-center gap-2 text-lg font-black tracking-tight text-white sm:gap-3 sm:text-xl">
-            <img src="https://scontent.flhe38-1.fna.fbcdn.net/v/t39.30808-6/299825356_429330659216310_8922120631896477365_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHW8Hp33TSyrEAtJgbytZYUjJoZoxSqmOyMmhmjFKqY7DuBpf-ey-DBdSejrmvnv3wJdNP4-Q2JwnVMnv1yiQkR&_nc_ohc=w-OauadJs4YQ7kNvwFQEoUt&_nc_oc=AdqxQt_w5H-yOMW0DNri4DuEWR_FAUHv16sygi4mUSwbZNtVTnf6-Hrs81A7rGwl6Lg&_nc_zt=23&_nc_ht=scontent.flhe38-1.fna&_nc_gid=u9Lr_deTDW4pNZ6LZqd6yQ&_nc_ss=7b2a8&oh=00_Af9ZMUWdU9XlZrH_WbXCStkQozGFbnCgBYe8ZRPuSk5Rnw&oe=6A23CB2E" alt="Flafe Logo" className="h-10 w-10 rounded-2xl object-cover shadow-md sm:h-12 sm:w-12 sm:rounded-3xl sm:shadow-lg" />
-            <div className="hidden text-left leading-tight sm:block">
-              <div className="font-black text-white text-sm">Flafe</div>
-              <div className="text-slate-400 text-xs">Restaurant</div>
-            </div>
-            <div className="text-left leading-tight sm:hidden">
-              <div className="font-black text-white">Flafe</div>
+    <div className="min-h-screen bg-gradient-to-br from-rose-100 via-pink-50 to-rose-200 text-slate-900 overflow-x-hidden">
+      <header className="sticky top-0 z-50 border-b border-rose-200 bg-white/90 backdrop-blur-xl shadow-sm">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8 lg:py-4">
+          <button onClick={() => setPage("Home")} className="flex items-center gap-3 rounded-3xl bg-white px-3 py-2 shadow-sm shadow-rose-100 transition hover:shadow-rose-200 sm:px-4">
+            <img src="https://scontent.flhe38-1.fna.fbcdn.net/v/t39.30808-6/299825356_429330659216310_8922120631896477365_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHW8Hp33TSyrEAtJgbytZYUjJoZoxSqmOyMmhmjFKqY7DuBpf-ey-DBdSejrmvnv3wJdNP4-Q2JwnVMnv1yiQkR&_nc_ohc=w-OauadJs4YQ7kNvwFQEoUt&_nc_oc=AdqxQt_w5H-yOMW0DNri4DuEWR_FAUHv16sygi4mUSwbZNtVTnf6-Hrs81A7rGwl6Lg&_nc_zt=23&_nc_ht=scontent.flhe38-1.fna&_nc_gid=u9Lr_deTDW4pNZ6LZqd6yQ&_nc_ss=7b2a8&oh=00_Af9ZMUWdU9XlZrH_WbXCStkQozGFbnCgBYe8ZRPuSk5Rnw&oe=6A23CB2E" alt="Flafe Logo" className="h-11 w-11 rounded-3xl object-cover" />
+            <div className="text-left leading-tight">
+              <div className="text-base font-black text-slate-900">Flafe</div>
+              <div className="text-[11px] uppercase tracking-[0.3em] text-slate-500">Restaurant</div>
             </div>
           </button>
 
-          <nav className="hidden justify-center lg:flex lg:gap-2">
+          <nav className="hidden flex-1 justify-center gap-2 lg:flex">
             {navItems.map((item) => (
-              <button key={item} onClick={() => setPage(item)} className={`rounded-full px-5 py-3 text-sm font-semibold transition ${page === item ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-slate-300 hover:bg-slate-900 hover:text-white"}`}>
+              <button key={item} onClick={() => setPage(item)} className={`rounded-full px-5 py-2 text-sm font-semibold transition ${page === item ? "bg-[#ff3b4f] text-white shadow-lg shadow-rose-300/50" : "text-slate-600 hover:bg-white hover:text-slate-900"}`}>
                 {item}
               </button>
             ))}
           </nav>
 
-          <div className="flex items-center justify-end gap-2 sm:gap-3">
+          <div className="flex items-center gap-2">
             <PWAInstallPrompt />
-            <Link href="/menu-table" className="rounded-full bg-slate-800 px-4 py-2 text-xs font-semibold text-slate-100 shadow-lg shadow-black/20 transition hover:bg-slate-700 sm:px-5 sm:py-3 sm:text-sm">
-              Menu Table
-            </Link>
-            <Button onClick={openCart} className="rounded-full bg-orange-500 px-4 py-2 text-xs text-white shadow-lg shadow-orange-500/20 hover:bg-orange-400 sm:px-5 sm:py-3 sm:text-sm">
-              <ShoppingCart size={16} className="sm:size-18" /> <span className="hidden sm:inline">Cart</span> {cartCount > 0 && <span className="ml-1 rounded-full bg-slate-950 px-2 py-0.5 text-xs font-bold text-white sm:ml-2 sm:px-3 sm:py-1">{cartCount}</span>}
+            <Button onClick={openCart} className="rounded-full bg-[#ff3b4f] px-4 py-2 text-xs text-white shadow-lg shadow-rose-300/50 hover:bg-rose-600 sm:px-5 sm:py-3 sm:text-sm">
+              <ShoppingCart size={16} />
+              <span className="hidden sm:inline">Cart</span>
+              {cartCount > 0 && <span className="ml-2 rounded-full bg-slate-900 px-2 py-0.5 text-xs font-bold text-white">{cartCount}</span>}
             </Button>
           </div>
         </div>
       </header>
 
       <main className="relative overflow-hidden">
-        {page === "Home" && <HomePage setPage={setPage} setSelectedCategory={setSelectedCategory} addToCart={addToCart} openCart={openCart} foodItems={foodItems} loadingProducts={loadingProducts} />}
+        {page === "Home" && <HomePage setPage={setPage} setSelectedCategory={setSelectedCategory} search={search} setSearch={setSearch} selectedCategory={selectedCategory} categories={availableCategories} addToCart={addToCart} openCart={openCart} foodItems={foodItems} loadingProducts={loadingProducts} />}
         {page === "Menu" && (
           <MenuPage
             search={search}
@@ -270,14 +263,17 @@ function RestaurantWebsite() {
 
       <QuickViewModal item={selectedItem} onClose={closeQuickView} addToCart={addToCart} />
 
-      <MobileNav navItems={["Home", "Menu", "Categories", "Track Order"]} page={page} setPage={setPage} />
+      <MobileNav page={page} setPage={setPage} openCart={openCart} />
       <Footer setPage={setPage} />
     </div>
   );
 }
 
-function HomePage({ setPage, setSelectedCategory, addToCart, openCart, foodItems = [], loadingProducts = false }) {
-  const popular = foodItems.filter((item) => item.popular).slice(0, 4);
+function HomePage({ setPage, setSelectedCategory, search, setSearch, selectedCategory, categories = [], addToCart, openCart, foodItems = [], loadingProducts = false }) {
+  const popularBurgers = foodItems.filter((item) => item.category?.toLowerCase().includes("burger")).slice(0, 4);
+  const pizzaDeals = foodItems.filter((item) => item.category?.toLowerCase().includes("pizza") || item.category?.toLowerCase().includes("deal")).slice(0, 4);
+  const recommended = foodItems.filter((item) => item.popular || item.rating >= 4.5).slice(0, 4);
+  const recommendedItems = recommended.length ? recommended : foodItems.slice(0, 4);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -296,163 +292,219 @@ function HomePage({ setPage, setSelectedCategory, addToCart, openCart, foodItems
   if (loadingProducts && foodItems.length === 0) {
     return (
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="rounded-[2rem] border border-slate-800 bg-slate-900 p-12 text-center">
-          <p className="text-white">Loading products...</p>
+        <div className="rounded-[2rem] bg-white p-12 text-center shadow-xl shadow-rose-200/40">
+          <p className="text-slate-900">Loading products...</p>
         </div>
       </section>
     );
   }
 
+  const hero = heroSlides[currentSlide];
+
   return (
     <>
-      <section
-        className="relative overflow-hidden bg-slate-950"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-      >
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 opacity-80" />
-        <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/90 shadow-2xl shadow-orange-500/15">
+      <section className="relative overflow-hidden pb-16">
+        <div className="absolute inset-0 bg-gradient-to-br from-rose-100 via-pink-50 to-rose-200" />
+        <div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+          <div className="overflow-hidden rounded-[2rem] bg-white shadow-[0_50px_120px_-80px_rgba(255,59,79,0.55)]">
             <div className="relative h-[420px] sm:h-[520px]">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentSlide}
-                  initial={{ opacity: 0, x: 40 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -40 }}
-                  transition={{ duration: 0.8, ease: "easeInOut" }}
-                  className="absolute inset-0"
-                >
-                  <img src={heroSlides[currentSlide].image} alt={heroSlides[currentSlide].title} className="h-full w-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent" />
-                  <div className="absolute inset-0 flex flex-col justify-end px-6 pb-10 text-white sm:px-10 lg:px-14">
-                    <div className="max-w-2xl">
-                      <p className="text-sm uppercase tracking-[0.35em] text-orange-300">Premium Banner</p>
-                      <h1 className="mt-4 text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">{heroSlides[currentSlide].title}</h1>
-                      <p className="mt-4 max-w-xl text-base leading-7 text-slate-200 sm:text-lg">{heroSlides[currentSlide].subtitle}</p>
-                      <div className="mt-8 flex flex-wrap gap-3">
-                        <Button onClick={() => setPage("Menu")} className="rounded-full bg-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-orange-500/20 hover:bg-orange-400 sm:px-7 sm:py-4">{heroSlides[currentSlide].cta}</Button>
-                        <Button onClick={openCart} variant="outline" className="rounded-full border border-white/20 bg-slate-950/60 px-6 py-3 text-sm text-white transition hover:border-orange-500 hover:text-white sm:px-7 sm:py-4">View Cart</Button>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-
-              <button
-                onClick={goPrevSlide}
-                className="absolute left-4 top-1/2 z-20 -translate-y-1/2 rounded-full border border-white/10 bg-slate-900/60 p-3 text-white transition hover:bg-slate-900"
-                aria-label="Previous slide"
-              >
-                <ArrowRight className="rotate-180" size={18} />
-              </button>
-              <button
-                onClick={goNextSlide}
-                className="absolute right-4 top-1/2 z-20 -translate-y-1/2 rounded-full border border-white/10 bg-slate-900/60 p-3 text-white transition hover:bg-slate-900"
-                aria-label="Next slide"
-              >
-                <ArrowRight size={18} />
-              </button>
+              <img src={hero.image} alt={hero.title} className="h-full w-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
+              <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-10">
+                <span className="inline-flex rounded-full bg-[#ff3b4f]/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.35em] text-[#ff3b4f]">Top Deal</span>
+                <h1 className="mt-4 text-4xl font-black leading-tight text-white sm:text-5xl">{hero.title}</h1>
+                <p className="mt-4 max-w-2xl text-base leading-7 text-slate-100 sm:text-lg">{hero.subtitle}</p>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <Button onClick={() => setPage("Menu")} className="rounded-full bg-[#ff3b4f] px-6 py-3 text-sm text-white shadow-lg shadow-rose-300/40 hover:bg-rose-600">{hero.cta}</Button>
+                  <Button onClick={openCart} variant="outline" className="rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm text-white hover:border-[#ff3b4f]">View Cart</Button>
+                </div>
+              </div>
             </div>
-
-            <div className="mx-auto flex max-w-md items-center justify-center gap-3 py-6">
+            <div className="mx-auto flex max-w-md items-center justify-center gap-3 p-6">
               {heroSlides.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentSlide(index)}
-                  className={`h-2.5 rounded-full transition-all ${currentSlide === index ? "w-10 bg-orange-500" : "w-3 bg-slate-700"}`}
+                  className={`h-2.5 rounded-full transition-all ${currentSlide === index ? "w-10 bg-[#ff3b4f]" : "w-3 bg-slate-300"}`}
                   aria-label={`Go to slide ${index + 1}`}
                 />
               ))}
             </div>
-            <div className="mt-8 flex justify-center">
-              <Link href="/menu-table" className="inline-flex items-center justify-center rounded-full bg-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-orange-500/20 hover:bg-orange-400">
-                View Full Menu Table
-              </Link>
+          </div>
+
+          <div className="mt-8 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+            <div className="rounded-[2rem] bg-white p-5 shadow-lg shadow-rose-100">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                <div className="relative flex-1">
+                  <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-rose-300" />
+                  <input
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Search food, drinks or deals"
+                    className="w-full rounded-full border border-rose-100 bg-rose-50 px-12 py-3 text-sm text-slate-900 shadow-sm focus:border-[#ff3b4f] focus:outline-none"
+                  />
+                </div>
+                <Button onClick={openCart} className="w-full rounded-full bg-[#ff3b4f] px-5 py-3 text-sm text-white shadow-lg shadow-rose-200/40 hover:bg-rose-600 sm:w-auto">Open Cart</Button>
+              </div>
+              <div className="mt-4 flex gap-3 overflow-x-auto pb-3">
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => {
+                      setSelectedCategory(category);
+                      setPage("Menu");
+                    }}
+                    className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition ${selectedCategory === category ? "bg-[#ff3b4f] text-white shadow" : "bg-rose-50 text-slate-700 hover:bg-rose-100"}`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-[2rem] bg-white p-6 shadow-lg shadow-rose-100">
+              <p className="text-xs uppercase tracking-[0.35em] text-[#ff3b4f]">Why Choose Us</p>
+              <h2 className="mt-3 text-2xl font-black text-slate-900">Modern ordering with premium flavors</h2>
+              <p className="mt-3 text-sm leading-7 text-slate-600">From trending burgers to signature pizza combos, enjoy a food app experience built for fast choices and bold taste.</p>
+              <div className="mt-6 space-y-3">
+                <div className="flex items-center gap-3 rounded-3xl border border-rose-100 bg-rose-50 p-4">
+                  <div className="rounded-2xl bg-[#ff3b4f]/10 p-3 text-[#ff3b4f]"><Heart size={18} /></div>
+                  <div>
+                    <p className="font-bold text-slate-900">Fresh daily</p>
+                    <p className="text-sm text-slate-500">Ingredients selected for every order.</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 rounded-3xl border border-rose-100 bg-rose-50 p-4">
+                  <div className="rounded-2xl bg-[#ff3b4f]/10 p-3 text-[#ff3b4f]"><Bike size={18} /></div>
+                  <div>
+                    <p className="font-bold text-slate-900">Fast delivery</p>
+                    <p className="text-sm text-slate-500">Get food delivered hot and on time.</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 rounded-3xl border border-rose-100 bg-rose-50 p-4">
+                  <div className="rounded-2xl bg-[#ff3b4f]/10 p-3 text-[#ff3b4f]"><ChefHat size={18} /></div>
+                  <div>
+                    <p className="font-bold text-slate-900">Chef favorites</p>
+                    <p className="text-sm text-slate-500">Curated combos for every appetite.</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-16">
-        <div className="mb-10 max-w-3xl">
-          <p className="text-xs uppercase tracking-[0.35em] text-orange-300">Popular Picks</p>
-          <h2 className="mt-4 text-4xl font-black text-white sm:text-5xl">Customer favorites</h2>
-          <p className="mt-4 text-sm leading-7 text-slate-400">A refined selection of top dishes designed for premium taste and effortless ordering.</p>
+      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
+        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.35em] text-[#ff3b4f]">Popular Burgers</p>
+            <h2 className="mt-3 text-3xl font-black text-slate-900">Best burgers in town</h2>
+          </div>
+          <Button onClick={() => { setSelectedCategory("Burger"); setPage("Menu"); }} className="rounded-full bg-[#ff3b4f] px-5 py-3 text-sm text-white shadow-lg shadow-rose-200/40 hover:bg-rose-600">Browse Burgers</Button>
         </div>
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {popular.map((item) => (
-            <Card key={item.id} className="w-full overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 text-white shadow-xl transition hover:-translate-y-1 hover:shadow-2xl">
-              <div className="relative h-56 w-full overflow-hidden bg-slate-100">
-                <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {popularBurgers.length > 0 ? popularBurgers.map((item) => (
+            <Card key={item.id} className="overflow-hidden rounded-[2rem] border border-rose-100 bg-white shadow-lg">
+              <div className="h-48 overflow-hidden bg-rose-50">
+                <img src={item.image || categoryImages.Burger} alt={item.name} className="h-full w-full object-cover" />
               </div>
               <CardContent className="p-5">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h3 className="text-base font-black text-white sm:text-xl">{item.name}</h3>
-                    <p className="mt-2 text-xs text-slate-600 sm:text-sm">{item.category}</p>
-                  </div>
-                  <span className="rounded-full bg-slate-900 px-3 py-1.5 text-xs font-black text-orange-400 sm:px-4 sm:py-2 sm:text-sm">Rs {item.price}</span>
+                <p className="text-xs uppercase tracking-[0.35em] text-rose-300">{item.category}</p>
+                <h3 className="mt-3 text-lg font-black text-slate-900">{item.name}</h3>
+                <p className="mt-2 text-sm text-slate-500 line-clamp-3">{item.description || "Savory burger with premium toppings."}</p>
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <span className="text-sm font-black text-[#ff3b4f]">Rs {item.price}</span>
+                  <Button onClick={() => addToCart(item)} className="rounded-full bg-[#ff3b4f] px-4 py-2 text-sm text-white hover:bg-rose-600">Add</Button>
                 </div>
-                <p className="mt-4 text-sm leading-6 text-slate-900 line-clamp-3">{item.description}</p>
-                <div className="mt-6 flex items-center justify-between gap-3">
-                  <span className="flex items-center gap-1.5 text-sm text-slate-500"><Star className="text-orange-400" size={14} /> {item.rating}</span>
-                  <Button onClick={() => addToCart(item)} className="rounded-full bg-orange-500 px-4 py-2 text-sm text-white hover:bg-orange-400">Add</Button>
+              </CardContent>
+            </Card>
+          )) : (
+            <div className="rounded-[2rem] border border-rose-100 bg-white p-8 text-center text-slate-500">No burger recommendations available yet.</div>
+          )}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
+        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.35em] text-[#ff3b4f]">Pizza Deals</p>
+            <h2 className="mt-3 text-3xl font-black text-slate-900">Hot pizza offers</h2>
+          </div>
+          <Button onClick={() => { setSelectedCategory("Pizza"); setPage("Menu"); }} className="rounded-full bg-[#ff3b4f] px-5 py-3 text-sm text-white shadow-lg shadow-rose-200/40 hover:bg-rose-600">See all pizzas</Button>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {pizzaDeals.length > 0 ? pizzaDeals.map((item) => (
+            <Card key={item.id} className="overflow-hidden rounded-[2rem] border border-rose-100 bg-white shadow-lg">
+              <div className="h-48 overflow-hidden bg-rose-50">
+                <img src={item.image || categoryImages.Pizza} alt={item.name} className="h-full w-full object-cover" />
+              </div>
+              <CardContent className="p-5">
+                <p className="text-xs uppercase tracking-[0.35em] text-rose-300">{item.category}</p>
+                <h3 className="mt-3 text-lg font-black text-slate-900">{item.name}</h3>
+                <p className="mt-2 text-sm text-slate-500 line-clamp-3">{item.description || "Grab this pizza deal with fresh toppings and sides."}</p>
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <span className="text-sm font-black text-[#ff3b4f]">Rs {item.price}</span>
+                  <Button onClick={() => addToCart(item)} className="rounded-full bg-[#ff3b4f] px-4 py-2 text-sm text-white hover:bg-rose-600">Add</Button>
+                </div>
+              </CardContent>
+            </Card>
+          )) : (
+            <div className="rounded-[2rem] border border-rose-100 bg-white p-8 text-center text-slate-500">No pizza deals found.</div>
+          )}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
+        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.35em] text-[#ff3b4f]">Recommended</p>
+            <h2 className="mt-3 text-3xl font-black text-slate-900">Handpicked for you</h2>
+          </div>
+          <Button onClick={() => setPage("Menu")} className="rounded-full bg-[#ff3b4f] px-5 py-3 text-sm text-white shadow-lg shadow-rose-200/40 hover:bg-rose-600">More picks</Button>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {recommendedItems.map((item) => (
+            <Card key={item.id} className="overflow-hidden rounded-[2rem] border border-rose-100 bg-white shadow-lg">
+              <div className="h-48 overflow-hidden bg-rose-50">
+                <img src={item.image || categoryImages.Default} alt={item.name} className="h-full w-full object-cover" />
+              </div>
+              <CardContent className="p-5">
+                <p className="text-xs uppercase tracking-[0.35em] text-rose-300">{item.category}</p>
+                <h3 className="mt-3 text-lg font-black text-slate-900">{item.name}</h3>
+                <p className="mt-2 text-sm text-slate-500 line-clamp-3">{item.description || "A delicious choice made for your appetite."}</p>
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <span className="text-sm font-black text-[#ff3b4f]">Rs {item.price}</span>
+                  <Button onClick={() => addToCart(item)} className="rounded-full bg-[#ff3b4f] px-4 py-2 text-sm text-white hover:bg-rose-600">Add</Button>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
-        <div className="mt-10 flex justify-center">
-          <Link href="/menu-table" className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-orange-500/10 hover:bg-slate-100">
-            Explore the full menu table
-          </Link>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
+        <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.35em] text-[#ff3b4f]">Why Choose Us</p>
+            <h2 className="mt-3 text-3xl font-black text-slate-900">Your Foodie advantage</h2>
+          </div>
+          <p className="max-w-2xl text-sm leading-7 text-slate-600">A mobile-first ordering experience with fast delivery, curated deals, and a bright food menu designed for easy browsing.</p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-3">
+          <BannerCard title="Fast delivery" subtitle="Hot food arrives quickly." icon={<Bike size={24} />} />
+          <BannerCard title="Fresh ingredients" subtitle="Premium produce every day." icon={<Heart size={24} />} />
+          <BannerCard title="Easy tracking" subtitle="Follow your order in real time." icon={<PackageCheck size={24} />} />
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-16">
-        <div className="grid gap-6 sm:grid-cols-3">
-          <div className="rounded-[1.75rem] border border-slate-800 bg-slate-950 p-6 text-center">
-            <Star className="mx-auto text-orange-400" size={22} />
-            <p className="mt-4 text-2xl font-black text-white">4.8 Rating</p>
-            <p className="mt-2 text-sm text-slate-400">Trusted by foodies</p>
-          </div>
-          <div className="rounded-[1.75rem] border border-slate-800 bg-slate-950 p-6 text-center">
-            <Clock className="mx-auto text-orange-400" size={22} />
-            <p className="mt-4 text-2xl font-black text-white">25 Min</p>
-            <p className="mt-2 text-sm text-slate-400">Delivery time</p>
-          </div>
-          <div className="rounded-[1.75rem] border border-slate-800 bg-slate-950 p-6 text-center">
-            <Bike className="mx-auto text-orange-400" size={22} />
-            <p className="mt-4 text-2xl font-black text-white">24/7</p>
-            <p className="mt-2 text-sm text-slate-400">Service available</p>
-          </div>
+      <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
+        <div className="mb-10">
+          <p className="text-xs uppercase tracking-[0.35em] text-[#ff3b4f]">Reviews</p>
+          <h2 className="mt-3 text-3xl font-black text-slate-900">Loved by diners</h2>
         </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-6 py-16">
-        <div className="mb-10 max-w-3xl">
-          <p className="text-xs uppercase tracking-[0.35em] text-orange-300">Customer Reviews</p>
-          <h2 className="mt-4 text-4xl font-black text-white sm:text-5xl">Loved by diners</h2>
-        </div>
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-4 lg:grid-cols-3">
           <ReviewCard author="Ayesha Khan" rating="5.0" feedback="Amazing food and super fast delivery. The packaging felt premium and every bite was flavorful." />
           <ReviewCard author="Bilal Ahmed" rating="4.9" feedback="Best biryani in town. Ordering was effortless and the presentation was exceptional." />
           <ReviewCard author="Sara Malik" rating="5.0" feedback="Perfect balance of spice and freshness — the ideal order for family dinners." />
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-6 py-16">
-        <div className="mb-10 max-w-3xl">
-          <p className="text-xs uppercase tracking-[0.35em] text-orange-300">Gallery</p>
-          <h2 className="mt-4 text-4xl font-black text-white sm:text-5xl">A premium dining experience</h2>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {galleryImages.map((src, index) => (
-            <div key={index} className="overflow-hidden rounded-[1.75rem] bg-slate-900">
-              <img src={src} alt={`Gallery ${index + 1}`} className="h-56 w-full object-cover transition duration-500 hover:scale-105" />
-            </div>
-          ))}
         </div>
       </section>
     </>
@@ -461,126 +513,104 @@ function HomePage({ setPage, setSelectedCategory, addToCart, openCart, foodItems
 
 function MenuPage({ search, setSearch, selectedCategory, setSelectedCategory, categories = [], items = [], addToCart, isLoading, loadMore, hasMore, openQuickView, cart, subtotal, total }) {
   return (
-    <div className="bg-slate-950 pb-20 sm:pb-8">
-      <section className="border-b border-slate-800 bg-slate-950/95 px-4 py-3 backdrop-blur-xl sm:px-6 lg:px-8 lg:py-4">
+    <div className="bg-rose-50 pb-24">
+      <section className="border-b border-rose-200 bg-white/90 px-4 py-4 backdrop-blur-xl sm:px-6 lg:px-8 lg:py-6">
         <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                <input
-                  type="text"
-                  placeholder="Search dishes..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full rounded-full border border-slate-700 bg-slate-900/50 py-2.5 pl-10 pr-4 text-sm text-white placeholder-slate-500 shadow-sm focus:border-orange-500 focus:outline-none sm:py-3 sm:pl-12 sm:pr-6"
-                />
-              </div>
-
-              <div className="mt-2 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-                {categories.map((category) => (
-                  <button
-                    key={category}
-                    onClick={() => setSelectedCategory(category)}
-                    className={`whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-bold transition sm:px-4 sm:py-2 sm:text-sm ${selectedCategory === category ? "bg-orange-500 text-white shadow" : "bg-slate-900 text-slate-300 hover:bg-slate-800 hover:text-white"}`}
-                  >
-                    {category}
-                  </button>
-                ))}
-              </div>
+              <p className="text-xs uppercase tracking-[0.35em] text-[#ff3b4f]">Browse Menu</p>
+              <h1 className="mt-2 text-3xl font-black text-slate-900 sm:text-4xl">Order your favorites</h1>
             </div>
+            <Button onClick={() => setSearch("")} className="rounded-full bg-[#ff3b4f] px-5 py-3 text-sm text-white shadow-lg shadow-rose-200/40 hover:bg-rose-600">Reset Filters</Button>
+          </div>
+        </div>
+      </section>
 
-            <div className="hidden lg:block lg:w-72">
-              <div className="rounded-2xl border border-slate-800 bg-slate-900 p-4 text-center">
-                <p className="text-sm text-slate-400">Restaurant Rating</p>
-                <div className="mt-2 flex items-center justify-center gap-2">
-                  <Star className="text-orange-400" />
-                  <div className="text-lg font-black">4.8</div>
-                  <div className="text-sm text-slate-400">(1.2k reviews)</div>
-                </div>
-                <div className="mt-3 text-sm text-slate-400">Fast delivery • Fresh ingredients • Top-rated chefs</div>
-              </div>
+      <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="rounded-[2rem] bg-white p-4 shadow-lg shadow-rose-100 sm:p-6">
+          <div className="grid gap-4 lg:grid-cols-[1.6fr_0.9fr] lg:items-end">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-rose-300" />
+              <input
+                type="text"
+                placeholder="Search dishes..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full rounded-full border border-rose-100 bg-rose-50 px-12 py-3 text-sm text-slate-900 shadow-sm focus:border-[#ff3b4f] focus:outline-none"
+              />
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition ${selectedCategory === category ? "bg-[#ff3b4f] text-white shadow" : "bg-rose-50 text-slate-700 hover:bg-rose-100"}`}
+                >
+                  {category}
+                </button>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
-        <div className="grid gap-4 lg:grid-cols-12 lg:gap-6">
-          <div className="lg:col-span-9">
-            {isLoading ? (
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {Array.from({ length: 12 }).map((_, i) => (
-                  <SkeletonCard key={i} />
-                ))}
-              </div>
-            ) : items.length > 0 ? (
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {items.map((item) => (
-                  <motion.div key={item.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} whileHover={{ y: -4 }} className="w-full">
-                    <Card className="w-full overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 text-white shadow transition-transform hover:scale-[1.01] hover:shadow-2xl h-full flex flex-col">
-                      <div className="relative h-56 w-full overflow-hidden bg-slate-100">
-                        <img src={item.image} alt={item.name} className="h-full w-full object-cover transition duration-500" />
-                        {item.popular && <div className="absolute right-2 top-2 rounded-full bg-orange-500 px-2.5 py-1 text-xs font-bold text-white sm:right-3 sm:top-3 sm:px-3">Popular</div>}
+      <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        {isLoading ? (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        ) : items.length > 0 ? (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {items.map((item) => (
+              <motion.div key={item.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="w-full">
+                <Card className="overflow-hidden rounded-[2rem] border border-rose-100 bg-white shadow-lg">
+                  <div className="h-56 overflow-hidden bg-rose-50">
+                    <img src={item.image} alt={item.name} className="h-full w-full object-cover transition duration-500 hover:scale-105" />
+                  </div>
+                  <CardContent className="flex h-full flex-col p-5">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-xs uppercase tracking-[0.35em] text-rose-300">{item.category}</p>
+                        <h3 className="mt-2 text-lg font-black text-slate-900">{item.name}</h3>
                       </div>
-                      <CardContent className="flex flex-1 flex-col p-5">
-                        <div className="flex items-start justify-between gap-2 sm:gap-3">
-                          <div className="min-w-0 flex-1">
-                            <h3 className="text-sm font-black truncate sm:text-base">{item.name}</h3>
-                            <p className="mt-1 text-xs text-slate-700 sm:mt-2 sm:text-xs">{item.category}</p>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-xs font-bold text-orange-400 sm:text-sm">Rs {item.price}</div>
-                            <div className="text-xs text-slate-700">{item.prep}</div>
-                          </div>
-                        </div>
-                       <p className="mt-2 flex-1 text-xs text-slate-700 line-clamp-3 sm:mt-3 sm:text-sm">{item.description}</p>
-                        <div className="mt-3 flex items-center gap-2 sm:mt-4">
-                          <Button onClick={() => addToCart(item)} className="rounded-full bg-orange-500 px-3 py-1.5 text-xs text-white hover:bg-orange-400 sm:px-3 sm:py-2 sm:text-sm">Add</Button>
-                          <Button variant="outline" onClick={() => openQuickView(item)} className="rounded-full px-3 py-1.5 text-xs sm:px-3 sm:py-2 sm:text-sm">View</Button>
-                          <div className="ml-auto flex shrink-0 items-center gap-1 text-xs text-slate-600 sm:gap-2 sm:text-sm"><Star className="text-orange-400" size={12} className="sm:size-14" />{item.rating}</div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
-              </div>
-            ) : (
-              <div className="py-12 text-center">
-                <Search className="mx-auto mb-4 text-slate-500" size={48} />
-                <h3 className="text-xl font-bold text-slate-300">No dishes found</h3>
-                <p className="mt-2 text-slate-400">Try adjusting your search or category selection.</p>
-              </div>
-            )}
-
-            <div className="mt-6 flex items-center justify-center">
-              {hasMore ? (
-                <Button onClick={loadMore} className="rounded-full bg-slate-800 px-6 py-3 text-sm text-white hover:bg-slate-700">Load More</Button>
-              ) : (
-                <div className="text-sm text-slate-500">No more items</div>
-              )}
-            </div>
+                      <div className="text-right">
+                        <p className="text-base font-black text-[#ff3b4f]">Rs {item.price}</p>
+                      </div>
+                    </div>
+                    <p className="mt-3 flex-1 text-sm leading-6 text-slate-600 line-clamp-3">{item.description || "Delicious meal ready to order."}</p>
+                    <div className="mt-4 flex items-center gap-3">
+                      <Button onClick={() => addToCart(item)} className="rounded-full bg-[#ff3b4f] px-4 py-2 text-sm text-white hover:bg-rose-600">Add</Button>
+                      <Button variant="outline" onClick={() => openQuickView(item)} className="rounded-full px-4 py-2 text-sm text-slate-700 hover:bg-rose-50">View</Button>
+                      <div className="ml-auto flex items-center gap-1 text-sm text-slate-500">
+                        <Star className="text-[#ff3b4f]" size={14} /> {item.rating || "4.8"}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
           </div>
+        ) : (
+          <div className="rounded-[2rem] bg-white p-12 text-center shadow-lg shadow-rose-100">
+            <Search className="mx-auto text-rose-400" size={48} />
+            <h3 className="mt-6 text-xl font-black text-slate-900">No items found</h3>
+            <p className="mt-2 text-sm text-slate-500">Try a different category or search keyword.</p>
+          </div>
+        )}
+      </section>
 
-          <aside className="lg:col-span-3">
-            <div className="sticky top-28 hidden space-y-4 lg:block">
-              <div className="rounded-2xl border border-slate-800 bg-slate-900 p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-black text-white">Cart Summary</h4>
-                    <p className="text-sm text-slate-400">{cart.length} items</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-black text-orange-400">Rs {subtotal}</div>
-                    <div className="text-sm text-slate-400">Est. Rs {total}</div>
-                  </div>
-                </div>
-                <Button className="mt-4 w-full rounded-full bg-orange-500 py-3 text-white">Checkout</Button>
-              </div>
-            </div>
-          </aside>
+      <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-sm font-bold text-slate-900">Order Summary</p>
+            <p className="text-sm text-slate-500">{cart.length} items in cart</p>
+          </div>
+          <div className="rounded-full bg-white px-5 py-3 text-sm font-black text-[#ff3b4f] shadow-sm shadow-rose-100">Total Rs {total}</div>
         </div>
       </section>
+
     </div>
   );
 }
@@ -1254,23 +1284,29 @@ function QuickViewModal({ item, onClose, addToCart }) {
   );
 }
 
-function MobileNav({ page, setPage }) {
-  const mobileItems = ["Home", "Menu", "Categories", "Track Order", "My Orders", "Contact", "FAQ"];
+function MobileNav({ page, setPage, openCart }) {
+  const mobileItems = ["Home", "Menu", "Categories", "Track"];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-800 bg-slate-950 px-2 py-2 md:hidden">
-      <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
+    <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-rose-200 bg-white/95 px-3 py-3 shadow-xl shadow-rose-100 md:hidden">
+      <div className="flex items-center justify-between gap-2">
         {mobileItems.map((item) => (
           <button
             key={item}
-            onClick={() => setPage(item)}
-            className={`whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-bold transition ${
-              page === item ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "bg-slate-900 text-slate-400 hover:text-white"
+            onClick={() => setPage(item === "Track" ? "Track Order" : item)}
+            className={`flex-1 rounded-3xl px-3 py-2 text-xs font-semibold transition ${
+              page === item || (item === "Track" && page === "Track Order") ? "bg-[#ff3b4f] text-white shadow-lg shadow-rose-300/40" : "bg-rose-50 text-slate-700 hover:bg-rose-100"
             }`}
           >
             {item}
           </button>
         ))}
+        <button
+          onClick={openCart}
+          className="flex-1 rounded-3xl bg-[#ff3b4f] px-3 py-2 text-xs font-semibold text-white shadow-lg shadow-rose-300/40"
+        >
+          Cart
+        </button>
       </div>
     </div>
   );
