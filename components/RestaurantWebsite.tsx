@@ -1314,7 +1314,7 @@ function HamburgerMenu({ open, onClose, setPage }) {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", stiffness: 260, damping: 25 }}
-            className="fixed right-0 top-0 z-50 h-full w-full max-w-xs bg-slate-950 p-6 text-slate-100 shadow-2xl sm:max-w-sm"
+            className="fixed right-0 top-0 z-50 h-full w-[min(92vw,20rem)] max-w-xs overflow-y-auto bg-slate-950 p-6 text-slate-100 shadow-2xl sm:w-[min(85vw,22rem)] sm:max-w-sm"
           >
             <div className="flex items-center justify-between">
               <div>
