@@ -1,7 +1,7 @@
 // @ts-nocheck
 "use client";
 
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Award, Bike, ChefHat, Clock, Heart, Image, Mail, MessageCircle, Minus, Plus, Search, ShoppingCart, Star, Trash2, Phone, PackageCheck, MapPin, Menu, X } from "lucide-react";
@@ -76,6 +76,8 @@ function RestaurantWebsite() {
   const [foodItems, setFoodItems] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [userOrders, setUserOrders] = useState([]);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+  const menuCardRef = useRef<HTMLDivElement | null>(null);
 
   // Load orders from localStorage on mount
   useEffect(() => {
@@ -177,7 +179,7 @@ function RestaurantWebsite() {
 
   const removeItem = (id) => setCart((prev) => prev.filter((item) => item.id !== id));
 
-  const navItems = ["Home", "Menu", "Categories", "My Orders", "Track Order", "About", "Contact", "FAQ"];
+  const navItems = ["Home", "Menu Card", "Menu", "Categories", "My Orders", "Track Order", "About", "Contact", "FAQ"];
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
   const toggleMenu = () => setIsMenuOpen((value) => !value);
@@ -185,6 +187,24 @@ function RestaurantWebsite() {
   const openQuickView = (item) => setSelectedItem(item);
   const closeQuickView = () => setSelectedItem(null);
   const loadMore = () => setMenuPageNum((p) => p + 1);
+
+  const handleNavClick = (item) => {
+    if (item === "Menu Card") {
+      setPage("Home");
+      setActiveSection("MenuCard");
+      return;
+    }
+
+    setActiveSection(null);
+    setPage(item);
+  };
+
+  useEffect(() => {
+    if (activeSection === "MenuCard" && page === "Home" && menuCardRef.current) {
+      menuCardRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      setActiveSection(null);
+    }
+  }, [activeSection, page]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-100 via-pink-50 to-rose-200 text-slate-900 overflow-x-hidden">
@@ -200,7 +220,7 @@ function RestaurantWebsite() {
 
           <nav className="hidden lg:flex flex-1 justify-center gap-2">
             {navItems.map((item) => (
-              <button key={item} onClick={() => setPage(item)} className={`rounded-full px-5 py-2 text-sm font-semibold transition ${page === item ? "bg-[#ff3b4f] text-white shadow-lg shadow-rose-300/50" : "text-slate-600 hover:bg-white hover:text-slate-900"}`}>
+              <button key={item} onClick={() => handleNavClick(item)} className={`rounded-full px-5 py-2 text-sm font-semibold transition ${page === item || (item === "Menu Card" && page === "Home" && activeSection === null && menuCardRef.current) ? "bg-[#ff3b4f] text-white shadow-lg shadow-rose-300/50" : "text-slate-600 hover:bg-white hover:text-slate-900"}`}>
                 {item}
               </button>
             ))}
@@ -228,7 +248,7 @@ function RestaurantWebsite() {
       </header>
 
       <main className="relative overflow-hidden">
-        {page === "Home" && <HomePage setPage={setPage} setSelectedCategory={setSelectedCategory} search={search} setSearch={setSearch} selectedCategory={selectedCategory} categories={availableCategories} addToCart={addToCart} openCart={openCart} foodItems={foodItems} loadingProducts={loadingProducts} />}
+        {page === "Home" && <HomePage menuCardRef={menuCardRef} setPage={handleNavClick} setSelectedCategory={setSelectedCategory} search={search} setSearch={setSearch} selectedCategory={selectedCategory} categories={availableCategories} addToCart={addToCart} openCart={openCart} foodItems={foodItems} loadingProducts={loadingProducts} />}
         {page === "Menu" && (
           <MenuPage
             search={search}
@@ -277,17 +297,19 @@ function RestaurantWebsite() {
       <HamburgerMenu open={isMenuOpen} onClose={closeMenu} setPage={(pageName) => { setPage(pageName); closeMenu(); }} />
       <QuickViewModal item={selectedItem} onClose={closeQuickView} addToCart={addToCart} />
 
-      <MobileNav page={page} setPage={setPage} openCart={openCart} />
-      <Footer setPage={setPage} />
+      <MobileNav page={page} setPage={handleNavClick} openCart={openCart} />
+      <HamburgerMenu open={isMenuOpen} onClose={closeMenu} setPage={handleNavClick} />
+      <Footer setPage={handleNavClick} />
     </div>
   );
 }
 
-function HomePage({ setPage, setSelectedCategory, search, setSearch, selectedCategory, categories = [], addToCart, openCart, foodItems = [], loadingProducts = false }) {
+function HomePage({ menuCardRef, setPage, setSelectedCategory, search, setSearch, selectedCategory, categories = [], addToCart, openCart, foodItems = [], loadingProducts = false }) {
   const popularBurgers = foodItems.filter((item) => item.category?.toLowerCase().includes("burger")).slice(0, 4);
   const pizzaDeals = foodItems.filter((item) => item.category?.toLowerCase().includes("pizza") || item.category?.toLowerCase().includes("deal")).slice(0, 4);
   const recommended = foodItems.filter((item) => item.popular || item.rating >= 4.5).slice(0, 4);
   const recommendedItems = recommended.length ? recommended : foodItems.slice(0, 4);
+  const menuCardItems = foodItems.slice(0, 6);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -435,6 +457,36 @@ function HomePage({ setPage, setSelectedCategory, search, setSearch, selectedCat
             </Card>
           )) : (
             <div className="rounded-[2rem] border border-rose-100 bg-white p-8 text-center text-slate-500">No pizza deals found.</div>
+          )}
+        </div>
+      </section>
+
+      <section ref={menuCardRef} className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
+        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.35em] text-[#ff3b4f]">Menu Card</p>
+            <h2 className="mt-3 text-3xl font-black text-slate-900">Explore our menu cards</h2>
+          </div>
+          <Button onClick={() => { setSelectedCategory("All"); setPage("Menu"); }} className="rounded-full bg-[#ff3b4f] px-5 py-3 text-sm text-white shadow-lg shadow-rose-200/40 hover:bg-rose-600">Browse full menu</Button>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {menuCardItems.length > 0 ? menuCardItems.map((item) => (
+            <Card key={item.id} className="overflow-hidden rounded-[2rem] border border-rose-100 bg-white shadow-lg">
+              <div className="h-44 overflow-hidden bg-rose-50">
+                <img src={item.image || categoryImages.Default} alt={item.name} className="h-full w-full object-cover" />
+              </div>
+              <CardContent className="p-5">
+                <p className="text-xs uppercase tracking-[0.35em] text-rose-300">{item.category}</p>
+                <h3 className="mt-3 text-lg font-black text-slate-900">{item.name}</h3>
+                <p className="mt-2 text-sm text-slate-500 line-clamp-3">{item.description || "Order from our fresh selection of favorites."}</p>
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <span className="text-sm font-black text-[#ff3b4f]">Rs {item.price}</span>
+                  <Button onClick={() => addToCart(item)} className="rounded-full bg-[#ff3b4f] px-4 py-2 text-sm text-white hover:bg-rose-600">Add</Button>
+                </div>
+              </CardContent>
+            </Card>
+          )) : (
+            <div className="rounded-[2rem] border border-rose-100 bg-white p-8 text-center text-slate-500">Loading menu cards...</div>
           )}
         </div>
       </section>
@@ -1270,15 +1322,15 @@ function QuickViewModal({ item, onClose, addToCart }) {
 }
 
 function MobileNav({ page, setPage, openCart }) {
-  const mobileItems = ["Home", "Menu"];
+  const mobileItems = ["Home", "Menu Card", "Menu"];
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-50 grid grid-cols-3 gap-3 lg:hidden">
+    <div className="fixed bottom-4 left-4 right-4 z-50 grid grid-cols-4 gap-3 lg:hidden">
       {mobileItems.map((item) => (
         <button
           key={item}
           onClick={() => setPage(item)}
-          className={`rounded-full bg-white px-4 py-3 text-xs font-semibold text-slate-900 shadow-xl shadow-slate-200 transition ${
+          className={`rounded-full bg-white px-3 py-3 text-[10px] font-semibold text-slate-900 shadow-xl shadow-slate-200 transition ${
             page === item ? "bg-[#ff3b4f] text-white" : "hover:bg-slate-100"
           }`}
         >
@@ -1296,7 +1348,7 @@ function MobileNav({ page, setPage, openCart }) {
 }
 
 function HamburgerMenu({ open, onClose, setPage }) {
-  const menuItems = ["Home", "Menu", "Categories", "Track Order", "My Orders", "About", "Contact", "FAQ"];
+  const menuItems = ["Home", "Menu Card", "Menu", "Categories", "Track Order", "My Orders", "About", "Contact", "FAQ"];
 
   return (
     <AnimatePresence>
@@ -1366,7 +1418,7 @@ function Footer({ setPage }) {
           <div>
             <p className="font-bold text-white">Quick Links</p>
             <div className="mt-3 space-y-2">
-              {["Menu", "Track Order", "Contact", "FAQ"].map((item) => (
+              {["Menu Card", "Menu", "Track Order", "Contact", "FAQ"].map((item) => (
                 <button key={item} onClick={() => setPage(item)} className="block text-sm hover:text-orange-500">
                   {item}
                 </button>
