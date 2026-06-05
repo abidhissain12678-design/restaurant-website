@@ -76,8 +76,6 @@ function RestaurantWebsite() {
   const [foodItems, setFoodItems] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [userOrders, setUserOrders] = useState([]);
-  const [activeSection, setActiveSection] = useState<string | null>(null);
-  const menuCardRef = useRef<HTMLDivElement | null>(null);
 
   // Load orders from localStorage on mount
   useEffect(() => {
@@ -179,7 +177,7 @@ function RestaurantWebsite() {
 
   const removeItem = (id) => setCart((prev) => prev.filter((item) => item.id !== id));
 
-  const navItems = ["Home", "Menu Card", "Menu", "Categories", "My Orders", "Track Order", "About", "Contact", "FAQ"];
+  const navItems = ["Home", "Menu Card"];
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
   const toggleMenu = () => setIsMenuOpen((value) => !value);
@@ -190,21 +188,13 @@ function RestaurantWebsite() {
 
   const handleNavClick = (item) => {
     if (item === "Menu Card") {
-      setPage("Home");
-      setActiveSection("MenuCard");
+      setSelectedCategory("All");
+      setPage("Menu");
       return;
     }
 
-    setActiveSection(null);
     setPage(item);
   };
-
-  useEffect(() => {
-    if (activeSection === "MenuCard" && page === "Home" && menuCardRef.current) {
-      menuCardRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-      setActiveSection(null);
-    }
-  }, [activeSection, page]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-100 via-pink-50 to-rose-200 text-slate-900 overflow-x-hidden">
@@ -220,7 +210,7 @@ function RestaurantWebsite() {
 
           <nav className="hidden lg:flex flex-1 justify-center gap-2">
             {navItems.map((item) => (
-              <button key={item} onClick={() => handleNavClick(item)} className={`rounded-full px-5 py-2 text-sm font-semibold transition ${page === item || (item === "Menu Card" && page === "Home" && activeSection === null && menuCardRef.current) ? "bg-[#ff3b4f] text-white shadow-lg shadow-rose-300/50" : "text-slate-600 hover:bg-white hover:text-slate-900"}`}>
+              <button key={item} onClick={() => handleNavClick(item)} className={`rounded-full px-5 py-2 text-sm font-semibold transition ${page === item ? "bg-[#ff3b4f] text-white shadow-lg shadow-rose-300/50" : "text-slate-600 hover:bg-white hover:text-slate-900"}`}>
                 {item}
               </button>
             ))}
@@ -248,7 +238,7 @@ function RestaurantWebsite() {
       </header>
 
       <main className="relative overflow-hidden">
-        {page === "Home" && <HomePage menuCardRef={menuCardRef} setPage={handleNavClick} setSelectedCategory={setSelectedCategory} search={search} setSearch={setSearch} selectedCategory={selectedCategory} categories={availableCategories} addToCart={addToCart} openCart={openCart} foodItems={foodItems} loadingProducts={loadingProducts} />}
+        {page === "Home" && <HomePage setPage={handleNavClick} setSelectedCategory={setSelectedCategory} search={search} setSearch={setSearch} selectedCategory={selectedCategory} categories={availableCategories} addToCart={addToCart} openCart={openCart} foodItems={foodItems} loadingProducts={loadingProducts} />}
         {page === "Menu" && (
           <MenuPage
             search={search}
@@ -304,7 +294,7 @@ function RestaurantWebsite() {
   );
 }
 
-function HomePage({ menuCardRef, setPage, setSelectedCategory, search, setSearch, selectedCategory, categories = [], addToCart, openCart, foodItems = [], loadingProducts = false }) {
+function HomePage({ setPage, setSelectedCategory, search, setSearch, selectedCategory, categories = [], addToCart, openCart, foodItems = [], loadingProducts = false }) {
   const popularBurgers = foodItems.filter((item) => item.category?.toLowerCase().includes("burger")).slice(0, 4);
   const pizzaDeals = foodItems.filter((item) => item.category?.toLowerCase().includes("pizza") || item.category?.toLowerCase().includes("deal")).slice(0, 4);
   const recommended = foodItems.filter((item) => item.popular || item.rating >= 4.5).slice(0, 4);
@@ -461,7 +451,7 @@ function HomePage({ menuCardRef, setPage, setSelectedCategory, search, setSearch
         </div>
       </section>
 
-      <section ref={menuCardRef} className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
         <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.35em] text-[#ff3b4f]">Menu Card</p>
