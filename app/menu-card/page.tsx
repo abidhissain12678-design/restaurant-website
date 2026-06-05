@@ -40,6 +40,13 @@ const categories = [
   "Deals",
 ];
 
+const recommendedIds = [
+  "pizza-white-flafe-special",
+  "burger-jumbo-zinger",
+  "deal-2",
+  "wings-honey-10",
+];
+
 const menuItems: MenuItem[] = [
   { id: "pizza-kabab-special", name: "Kabab Special Pizza", category: "Pizza", prices: [{ size: "M", price: 1450 }, { size: "L", price: 2050 }, { size: "XL", price: 2700 }], description: "Signature kabab pizza with premium toppings." },
   { id: "pizza-donner-special", name: "Donner Special Pizza", category: "Pizza", prices: [{ size: "M", price: 1450 }, { size: "L", price: 2050 }, { size: "XL", price: 2700 }], description: "Classic donner pizza loaded with flavor." },
@@ -237,6 +244,46 @@ export default function MenuCardPage() {
             </div>
           </div>
         </div>
+
+        <section className="mb-8 rounded-[2rem] border border-slate-800 bg-slate-900/80 p-6 shadow-xl shadow-orange-500/10">
+          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm uppercase tracking-[0.35em] text-orange-400">Recommended for you</p>
+              <h2 className="mt-2 text-3xl font-black text-white">Top picks from Flafe</h2>
+            </div>
+            <p className="max-w-xl text-sm leading-6 text-slate-400">
+              Hand-picked favourites to help you order fast — made for sharing, meals, and bigger cravings.
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {menuItems
+              .filter((item) => recommendedIds.includes(item.id))
+              .map((item) => (
+                <div key={item.id} className="rounded-[1.75rem] border border-slate-800 bg-slate-950 p-5 shadow-sm shadow-black/10">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.35em] text-orange-400">{item.category}</p>
+                      <h3 className="mt-2 text-lg font-black text-white">{item.name}</h3>
+                    </div>
+                    <span className="rounded-full bg-slate-800 px-3 py-2 text-sm text-orange-300">
+                      {typeof item.prices === "number"
+                        ? formatCurrency(item.prices)
+                        : item.prices[0]
+                        ? `${item.prices[0].size} ${formatCurrency(item.prices[0].price)}`
+                        : "-"}
+                    </span>
+                  </div>
+                  {item.description ? <p className="mt-3 text-sm text-slate-400">{item.description}</p> : null}
+                  <button
+                    onClick={() => addToCart(item, typeof item.prices === "number" ? undefined : item.prices[0]?.size, typeof item.prices === "number" ? item.prices : item.prices[0]?.price)}
+                    className="mt-5 w-full rounded-full bg-orange-400 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-orange-300"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              ))}
+          </div>
+        </section>
 
         <div className="grid gap-8 lg:grid-cols-[1.75fr_0.95fr]">
           <div className="space-y-6">
