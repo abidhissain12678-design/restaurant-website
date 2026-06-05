@@ -227,6 +227,7 @@ function RestaurantWebsite() {
       </header>
 
       <main className="relative overflow-hidden">
+        <MobileNav page={page} setPage={handleNavClick} openCart={openCart} />
         {page === "Home" && <HomePage setPage={handleNavClick} setSelectedCategory={setSelectedCategory} search={search} setSearch={setSearch} selectedCategory={selectedCategory} categories={availableCategories} addToCart={addToCart} openCart={openCart} foodItems={foodItems} loadingProducts={loadingProducts} />}
         {page === "Menu" && (
           <MenuPage
@@ -273,8 +274,6 @@ function RestaurantWebsite() {
         onCheckout={() => { setPage("Checkout"); closeCart(); }}
       />
       <QuickViewModal item={selectedItem} onClose={closeQuickView} addToCart={addToCart} />
-
-      <MobileNav page={page} setPage={handleNavClick} openCart={openCart} />
       <HamburgerMenu open={isMenuOpen} onClose={closeMenu} setPage={(pageName) => { handleNavClick(pageName); closeMenu(); }} />
       <Footer setPage={handleNavClick} />
     </div>
@@ -876,16 +875,16 @@ function CheckoutPage({ total, delivery, subtotal, profit, cart, setPage, clearC
 
         <div className="rounded-[2rem] border border-orange-500/30 bg-orange-500/5 p-8">
           <div className="space-y-3">
-            <div className="flex justify-between text-slate-300">
+            <div className="flex justify-between text-slate-700">
               <span>Subtotal</span>
               <span>Rs {total}</span>
             </div>
-            <div className="flex justify-between text-slate-300">
+            <div className="flex justify-between text-slate-700">
               <span>Delivery Fee</span>
               <span>Rs 150</span>
             </div>
             <div className="border-t border-slate-700 pt-3">
-              <div className="flex justify-between text-2xl font-black text-white">
+              <div className="flex justify-between text-2xl font-black text-black">
                 <span>Total</span>
                 <span className="text-orange-500">Rs {total + 150}</span>
               </div>
@@ -1302,13 +1301,13 @@ function MobileNav({ page, setPage, openCart }) {
   const mobileItems = ["Home", "Menu Card", "Menu"];
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-50 grid grid-cols-4 gap-3 lg:hidden">
+    <div className="lg:hidden mx-auto mb-6 flex w-full max-w-7xl gap-3 overflow-x-auto px-4 py-3">
       {mobileItems.map((item) => (
         <button
           key={item}
           onClick={() => setPage(item)}
-          className={`rounded-full bg-white px-3 py-3 text-[10px] font-semibold text-slate-900 shadow-xl shadow-slate-200 transition ${
-            page === item ? "bg-[#ff3b4f] text-white" : "hover:bg-slate-100"
+          className={`snap-center flex-shrink-0 rounded-full border border-slate-200 bg-white px-4 py-3 text-[11px] font-semibold text-slate-900 shadow-sm shadow-slate-200 transition ${
+            page === item ? "border-transparent bg-[#ff3b4f] text-white" : "hover:border-slate-300 hover:bg-slate-50"
           }`}
         >
           {item}
@@ -1316,7 +1315,7 @@ function MobileNav({ page, setPage, openCart }) {
       ))}
       <button
         onClick={openCart}
-        className="rounded-full bg-[#ff3b4f] px-4 py-3 text-xs font-semibold text-white shadow-xl shadow-slate-200 transition hover:bg-rose-600"
+        className="snap-center flex-shrink-0 rounded-full bg-[#ff3b4f] px-4 py-3 text-xs font-semibold text-white shadow-sm shadow-slate-200 transition hover:bg-rose-600"
       >
         Cart
       </button>
