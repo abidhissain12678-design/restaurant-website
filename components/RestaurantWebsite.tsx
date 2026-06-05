@@ -254,7 +254,7 @@ function RestaurantWebsite() {
             categories={availableCategories}
           />
         )}
-        {page === "Checkout" && <CheckoutPage total={total} delivery={delivery} subtotal={subtotal} profit={profit} cart={cart} setPage={setPage} clearCart={() => setCart([])} addOrderToHistory={addOrderToHistory} />}
+        {page === "Checkout" && <CheckoutPage total={total} delivery={delivery} subtotal={subtotal} profit={profit} cart={cart} setPage={setPage} clearCart={clearCart} addOrderToHistory={addOrderToHistory} />}
         {page === "My Orders" && <MyOrdersPage userOrders={userOrders} setPage={setPage} setTrackingId={setTrackingId} />}
         {page === "Track Order" && <TrackingPage trackingId={trackingId} setTrackingId={setTrackingId} />}
         {page === "About" && <AboutPage />}
@@ -707,21 +707,21 @@ function CartDrawer({ open, onClose, cart, updateQty, removeItem, subtotal, deli
           ) : (
             <div className="space-y-3">
               {cart.map((item) => (
-                <div key={item.id} className="rounded-xl border border-slate-800 bg-slate-900/50 p-3 sm:p-4">
+                <div key={item.cartId} className="rounded-xl border border-slate-800 bg-slate-900/50 p-3 sm:p-4">
                   <div className="flex gap-3 sm:gap-4">
                     <img src={item.image} alt={item.name} className="h-16 w-16 rounded-lg object-cover sm:h-20 sm:w-20" />
                     <div className="flex-1">
                       <h4 className="text-sm font-bold text-white sm:text-base">{item.name}</h4>
                       <p className="text-xs text-slate-400 sm:text-sm">Rs {item.price}</p>
                       <div className="mt-2 flex items-center gap-2 sm:mt-3">
-                        <button onClick={() => updateQty(item.id, -1)} className="rounded bg-slate-800 p-1 text-slate-300 hover:text-white">
+                        <button onClick={() => updateQty(item.cartId, -1)} className="rounded bg-slate-800 p-1 text-slate-300 hover:text-white">
                           <Minus size={14} />
                         </button>
                         <span className="w-6 text-center text-xs font-bold text-white sm:w-8">{item.qty}</span>
-                        <button onClick={() => updateQty(item.id, 1)} className="rounded bg-slate-800 p-1 text-slate-300 hover:text-white">
+                        <button onClick={() => updateQty(item.cartId, 1)} className="rounded bg-slate-800 p-1 text-slate-300 hover:text-white">
                           <Plus size={14} />
                         </button>
-                        <button onClick={() => removeItem(item.id)} className="ml-auto text-slate-500 hover:text-red-500">
+                        <button onClick={() => removeItem(item.cartId)} className="ml-auto text-slate-500 hover:text-red-500">
                           <Trash2 size={16} />
                         </button>
                       </div>
