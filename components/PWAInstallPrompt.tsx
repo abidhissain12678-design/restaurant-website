@@ -51,7 +51,7 @@ export default function PWAInstallPrompt() {
   }
 
   return (
-    <Button onClick={handleInstall} className="rounded-full bg-slate-800 px-5 py-3 text-sm text-white hover:bg-slate-700 md:block">
+    <Button onClick={handleInstall} className="rounded-full bg-slate-800 px-4 py-2 text-xs text-white hover:bg-slate-700 sm:px-5 sm:py-3 sm:text-sm">
       Install App
     </Button>
   );

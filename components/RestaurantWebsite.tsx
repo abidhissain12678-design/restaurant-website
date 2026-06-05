@@ -564,9 +564,9 @@ function MenuPage({ search, setSearch, selectedCategory, setSelectedCategory, ca
         ) : items.length > 0 ? (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {items.map((item) => (
-              <motion.div key={item.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="w-full">
-                <Card className="overflow-hidden rounded-[2rem] border border-rose-100 bg-white shadow-lg">
-                  <div className="h-56 overflow-hidden bg-rose-50">
+              <motion.div key={item.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-full">
+                <Card className="max-w-full overflow-hidden rounded-[2rem] border border-rose-100 bg-white shadow-lg">
+                  <div className="h-56 min-h-0 overflow-hidden bg-rose-50">
                     <img src={item.image} alt={item.name} className="h-full w-full object-cover transition duration-500 hover:scale-105" />
                   </div>
                   <CardContent className="flex h-full flex-col p-5">
@@ -646,9 +646,9 @@ function CategoriesPage({ setPage, setSelectedCategory, categories = [] }) {
                 setSelectedCategory(cat);
                 setPage("Menu");
               }}
-              className="group overflow-hidden rounded-[1.5rem] border border-slate-800 bg-slate-950 text-white transition hover:border-orange-500/50 sm:rounded-[2rem]"
+              className="group max-w-full overflow-hidden rounded-[1.5rem] border border-slate-800 bg-slate-950 text-white transition hover:border-orange-500/50 sm:rounded-[2rem]"
             >
-              <div className="relative h-56 w-full overflow-hidden bg-white">
+              <div className="relative h-56 min-h-0 w-full overflow-hidden bg-white">
                 <img src={img} alt={cat} className="h-full w-full object-contain bg-white transition duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/0" />
               </div>
