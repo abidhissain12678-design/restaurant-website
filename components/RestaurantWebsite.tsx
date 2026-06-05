@@ -332,7 +332,7 @@ function HomePage({ setPage, setSelectedCategory, search, setSearch, selectedCat
             </div>
           </div>
 
-          <div className="mt-8 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+          <div className="mt-8">
             <div className="rounded-[2rem] bg-white p-5 shadow-lg shadow-rose-100">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                 <div className="relative flex-1">
@@ -359,34 +359,6 @@ function HomePage({ setPage, setSelectedCategory, search, setSearch, selectedCat
                     {category}
                   </button>
                 ))}
-              </div>
-            </div>
-            <div className="rounded-[2rem] bg-white p-6 shadow-lg shadow-rose-100">
-              <p className="text-xs uppercase tracking-[0.35em] text-[#ff3b4f]">Why Choose Us</p>
-              <h2 className="mt-3 text-2xl font-black text-slate-900">Modern ordering with premium flavors</h2>
-              <p className="mt-3 text-sm leading-7 text-slate-600">From trending burgers to signature pizza combos, enjoy a food app experience built for fast choices and bold taste.</p>
-              <div className="mt-6 space-y-3">
-                <div className="flex items-center gap-3 rounded-3xl border border-rose-100 bg-rose-50 p-4">
-                  <div className="rounded-2xl bg-[#ff3b4f]/10 p-3 text-[#ff3b4f]"><Heart size={18} /></div>
-                  <div>
-                    <p className="font-bold text-slate-900">Fresh daily</p>
-                    <p className="text-sm text-slate-500">Ingredients selected for every order.</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 rounded-3xl border border-rose-100 bg-rose-50 p-4">
-                  <div className="rounded-2xl bg-[#ff3b4f]/10 p-3 text-[#ff3b4f]"><Bike size={18} /></div>
-                  <div>
-                    <p className="font-bold text-slate-900">Fast delivery</p>
-                    <p className="text-sm text-slate-500">Get food delivered hot and on time.</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 rounded-3xl border border-rose-100 bg-rose-50 p-4">
-                  <div className="rounded-2xl bg-[#ff3b4f]/10 p-3 text-[#ff3b4f]"><ChefHat size={18} /></div>
-                  <div>
-                    <p className="font-bold text-slate-900">Chef favorites</p>
-                    <p className="text-sm text-slate-500">Curated combos for every appetite.</p>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
