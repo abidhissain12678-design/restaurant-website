@@ -489,10 +489,9 @@ function HomePage({ setPage, setSelectedCategory, search, setSearch, selectedCat
           </div>
           <p className="max-w-2xl text-sm leading-7 text-slate-600">A mobile-first ordering experience with fast delivery, curated deals, and a bright food menu designed for easy browsing.</p>
         </div>
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2">
           <BannerCard title="Fast delivery" subtitle="Hot food arrives quickly." icon={<Bike size={24} />} />
           <BannerCard title="Fresh ingredients" subtitle="Premium produce every day." icon={<Heart size={24} />} />
-          <BannerCard title="Easy tracking" subtitle="Follow your order in real time." icon={<PackageCheck size={24} />} />
         </div>
       </section>
 
