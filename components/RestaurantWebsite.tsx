@@ -1,8 +1,9 @@
 // @ts-nocheck
 "use client";
 
-import React, { useMemo, useState, useEffect, useRef } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Award, Bike, ChefHat, Clock, Heart, Image, Mail, MessageCircle, Minus, Plus, Search, ShoppingCart, Star, Trash2, Phone, PackageCheck, MapPin, Menu, X } from "lucide-react";
 import { Button, Card, CardContent } from "@/components/ui";
@@ -177,6 +178,7 @@ function RestaurantWebsite() {
 
   const removeItem = (id) => setCart((prev) => prev.filter((item) => item.id !== id));
 
+  const router = useRouter();
   const navItems = ["Home", "Menu Card"];
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
@@ -188,8 +190,7 @@ function RestaurantWebsite() {
 
   const handleNavClick = (item) => {
     if (item === "Menu Card") {
-      setSelectedCategory("All");
-      setPage("Menu");
+      router.push("/menu-card");
       return;
     }
 
@@ -455,7 +456,7 @@ function HomePage({ setPage, setSelectedCategory, search, setSearch, selectedCat
             <p className="text-xs uppercase tracking-[0.35em] text-[#ff3b4f]">Menu Card</p>
             <h2 className="mt-3 text-3xl font-black text-slate-900">Explore our menu cards</h2>
           </div>
-          <Button onClick={() => { setSelectedCategory("All"); setPage("Menu"); }} className="rounded-full bg-[#ff3b4f] px-5 py-3 text-sm text-white shadow-lg shadow-rose-200/40 hover:bg-rose-600">Browse full menu</Button>
+          <Button onClick={() => router.push("/menu-card")} className="rounded-full bg-[#ff3b4f] px-5 py-3 text-sm text-white shadow-lg shadow-rose-200/40 hover:bg-rose-600">Full Menu Card</Button>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {menuCardItems.length > 0 ? menuCardItems.map((item) => (
