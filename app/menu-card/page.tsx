@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useCart } from "@/components/CartContext";
 
 type PriceOption = {
   size: "S" | "M" | "L" | "XL";
@@ -13,16 +15,6 @@ type MenuItem = {
   category: string;
   prices: number | PriceOption[];
   description?: string;
-};
-
-type CartItem = {
-  cartId: string;
-  id: string;
-  name: string;
-  category: string;
-  size?: string;
-  price: number;
-  qty: number;
 };
 
 const categories = [
@@ -142,9 +134,11 @@ function formatCurrency(value: number) {
 }
 
 export default function MenuCardPage() {
+  const router = useRouter();
+  const { cart, cartCount, subtotal, addToCart, removeFromCart, clearCart } = useCart();
+  const removeCartItem = removeFromCart;
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [search, setSearch] = useState("");
-  const [cart, setCart] = useState<CartItem[]>([]);
 
   const filteredItems = useMemo(() => {
     return menuItems.filter((item) => {
@@ -170,40 +164,13 @@ export default function MenuCardPage() {
     }));
   }, [categoriesToShow, filteredItems]);
 
-  const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
-  const cartTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const cartTotal = subtotal;
 
-  const addToCart = (item: MenuItem, size?: string, price?: number) => {
+  const handleAddToCart = (item: MenuItem, size?: string, price?: number) => {
     const selectedPrice = price ?? (typeof item.prices === "number" ? item.prices : 0);
-    const cartId = `${item.id}-${size ?? "base"}`;
-
-    setCart((prev) => {
-      const existing = prev.find((entry) => entry.cartId === cartId);
-      if (existing) {
-        return prev.map((entry) =>
-          entry.cartId === cartId ? { ...entry, qty: entry.qty + 1 } : entry
-        );
-      }
-      return [
-        ...prev,
-        {
-          cartId,
-          id: item.id,
-          name: item.name,
-          category: item.category,
-          size,
-          price: selectedPrice,
-          qty: 1,
-        },
-      ];
-    });
+    const name = size ? `${item.name} - ${size}` : item.name;
+    addToCart({ id: item.id, name, category: item.category, price: selectedPrice, size, description: item.description, qty: 1 });
   };
-
-  const removeCartItem = (cartId: string) => {
-    setCart((prev) => prev.filter((entry) => entry.cartId !== cartId));
-  };
-
-  const clearCart = () => setCart([]);
 
   const categoryLabel = selectedCategory === "All" ? "All Categories" : selectedCategory;
 
@@ -218,7 +185,7 @@ export default function MenuCardPage() {
               Browse every Flafe category, compare sizes, and add items directly to your local cart.
             </p>
           </div>
-          <div className="mt-6 flex flex-col gap-3 sm:mt-0 sm:flex-row sm:items-center">
+          <div className="mt-6 flex flex-col gap-3 sm:mt-0 sm:flex-row sm:items-center sm:justify-between">
             <div className="relative w-full sm:w-80">
               <input
                 value={search}
@@ -228,6 +195,12 @@ export default function MenuCardPage() {
               />
             </div>
             <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={() => router.push("/?showCart=true")}
+                className="rounded-full bg-orange-400 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-orange-300"
+              >
+                View Cart ({cartCount})
+              </button>
               {categories.map((category) => (
                 <button
                   key={category}
@@ -275,7 +248,7 @@ export default function MenuCardPage() {
                   </div>
                   {item.description ? <p className="mt-3 text-sm text-slate-400">{item.description}</p> : null}
                   <button
-                    onClick={() => addToCart(item, typeof item.prices === "number" ? undefined : item.prices[0]?.size, typeof item.prices === "number" ? item.prices : item.prices[0]?.price)}
+                    onClick={() => handleAddToCart(item, typeof item.prices === "number" ? undefined : item.prices[0]?.size, typeof item.prices === "number" ? item.prices : item.prices[0]?.price)}
                     className="mt-5 w-full rounded-full bg-orange-400 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-orange-300"
                   >
                     Add to Cart
@@ -328,7 +301,7 @@ export default function MenuCardPage() {
                         <div className="mt-4 flex flex-wrap gap-3">
                           {typeof item.prices === "number" ? (
                             <button
-                              onClick={() => addToCart(item, undefined, item.prices as number)}
+                              onClick={() => handleAddToCart(item, undefined, item.prices as number)}
                               className="rounded-full bg-orange-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-orange-300"
                             >
                               Add to Cart
@@ -337,7 +310,7 @@ export default function MenuCardPage() {
                             item.prices.map((priceOption) => (
                               <button
                                 key={priceOption.size}
-                                onClick={() => addToCart(item, priceOption.size, priceOption.price)}
+                                onClick={() => handleAddToCart(item, priceOption.size, priceOption.price)}
                                 className="rounded-full bg-orange-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-orange-300"
                               >
                                 Add {priceOption.size}
@@ -408,7 +381,7 @@ export default function MenuCardPage() {
                       Clear Cart
                     </button>
                     <button
-                      onClick={() => alert("Use the main checkout flow to complete your order.")}
+                      onClick={() => router.push("/?showCart=true")}
                       className="mt-3 w-full rounded-full bg-orange-400 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-orange-300"
                       disabled={cart.length === 0}
                     >
@@ -472,7 +445,7 @@ export default function MenuCardPage() {
                       Clear Cart
                     </button>
                     <button
-                      onClick={() => alert("Use the main checkout flow to complete your order.")}
+                      onClick={() => router.push("/?showCart=true")}
                       className="mt-3 w-full rounded-full bg-orange-400 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-orange-300"
                       disabled={cart.length === 0}
                     >

@@ -3,10 +3,11 @@
 
 import React, { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Award, Bike, ChefHat, Clock, Heart, Image, Mail, MessageCircle, Minus, Plus, Search, ShoppingCart, Star, Trash2, Phone, PackageCheck, MapPin, Menu, X } from "lucide-react";
 import { Button, Card, CardContent } from "@/components/ui";
+import { useCart } from "@/components/CartContext";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import { supabase } from "@/lib/supabase";
 
@@ -70,13 +71,15 @@ function RestaurantWebsite() {
   const [selectedItem, setSelectedItem] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [menuPageNum, setMenuPageNum] = useState(1);
-  const [cart, setCart] = useState([]);
   const [trackingId, setTrackingId] = useState("");
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [foodItems, setFoodItems] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [userOrders, setUserOrders] = useState([]);
+
+  const { cart, cartCount, subtotal, delivery, total, addToCart, removeFromCart, updateQty, clearCart } = useCart();
+  const searchParams = useSearchParams();
 
   // Load orders from localStorage on mount
   useEffect(() => {
@@ -124,10 +127,12 @@ function RestaurantWebsite() {
     loadProducts();
   }, []);
 
-  const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
-  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-  const delivery = subtotal > 0 ? 150 : 0;
-  const total = subtotal + delivery;
+  useEffect(() => {
+    if (searchParams.get("showCart") === "true") {
+      setIsCartOpen(true);
+    }
+  }, [searchParams]);
+
   const profit = cart.reduce((sum, item) => {
     const cost = Number(item.cost_price || item.cost || 0);
     return sum + (Number(item.price || 0) - cost) * Number(item.qty || 1);
@@ -159,24 +164,7 @@ function RestaurantWebsite() {
     return () => clearTimeout(t);
   }, [selectedCategory, search]);
 
-  const addToCart = (item) => {
-    const qtyToAdd = item.qty || 1;
-    setCart((prev) => {
-      const existing = prev.find((cartItem) => cartItem.id === item.id);
-      if (existing) {
-        return prev.map((cartItem) => cartItem.id === item.id ? { ...cartItem, qty: cartItem.qty + qtyToAdd } : cartItem);
-      }
-      return [...prev, { ...item, qty: qtyToAdd }];
-    });
-  };
-
-  const updateQty = (id, change) => {
-    setCart((prev) => prev
-      .map((item) => item.id === id ? { ...item, qty: Math.max(1, item.qty + change) } : item)
-      .filter((item) => item.qty > 0));
-  };
-
-  const removeItem = (id) => setCart((prev) => prev.filter((item) => item.id !== id));
+  const removeItem = removeFromCart;
 
   const router = useRouter();
   const navItems = ["Home", "Menu Card"];
