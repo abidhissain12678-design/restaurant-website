@@ -198,7 +198,7 @@ function RestaurantWebsite() {
             </div>
           </button>
 
-          <nav className="hidden flex-1 justify-center gap-2 lg:flex">
+          <nav className="hidden lg:flex flex-1 justify-center gap-2">
             {navItems.map((item) => (
               <button key={item} onClick={() => setPage(item)} className={`rounded-full px-5 py-2 text-sm font-semibold transition ${page === item ? "bg-[#ff3b4f] text-white shadow-lg shadow-rose-300/50" : "text-slate-600 hover:bg-white hover:text-slate-900"}`}>
                 {item}
@@ -207,8 +207,10 @@ function RestaurantWebsite() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <PWAInstallPrompt />
-            <Button onClick={openCart} className="rounded-full bg-[#ff3b4f] px-4 py-2 text-xs text-white shadow-lg shadow-rose-300/50 hover:bg-rose-600 sm:px-5 sm:py-3 sm:text-sm">
+            <div className="hidden lg:inline-flex">
+              <PWAInstallPrompt />
+            </div>
+            <Button onClick={openCart} className="inline-flex items-center justify-center rounded-full bg-[#ff3b4f] px-4 py-2 text-xs text-white shadow-lg shadow-rose-300/50 hover:bg-rose-600 sm:px-5 sm:py-3 sm:text-sm">
               <ShoppingCart size={16} />
               <span className="hidden sm:inline">Cart</span>
               {cartCount > 0 && <span className="ml-2 rounded-full bg-slate-900 px-2 py-0.5 text-xs font-bold text-white">{cartCount}</span>}
@@ -216,7 +218,7 @@ function RestaurantWebsite() {
             <button
               type="button"
               onClick={toggleMenu}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-900 shadow-sm transition hover:bg-rose-50"
+              className="inline-flex items-center justify-center rounded-full bg-black text-white h-11 w-11"
               aria-label="Open menu"
             >
               <Menu size={20} />
@@ -1271,26 +1273,24 @@ function MobileNav({ page, setPage, openCart }) {
   const mobileItems = ["Home", "Menu"];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-rose-200 bg-white/95 px-3 py-3 shadow-xl shadow-rose-100 md:hidden">
-      <div className="flex items-center justify-between gap-2">
-        {mobileItems.map((item) => (
-          <button
-            key={item}
-            onClick={() => setPage(item)}
-            className={`flex-1 rounded-3xl px-3 py-2 text-xs font-semibold transition ${
-              page === item ? "bg-[#ff3b4f] text-white shadow-lg shadow-rose-300/40" : "bg-rose-50 text-slate-700 hover:bg-rose-100"
-            }`}
-          >
-            {item}
-          </button>
-        ))}
+    <div className="fixed bottom-4 left-4 right-4 z-50 grid grid-cols-3 gap-3 lg:hidden">
+      {mobileItems.map((item) => (
         <button
-          onClick={openCart}
-          className="flex-1 rounded-3xl bg-[#ff3b4f] px-3 py-2 text-xs font-semibold text-white shadow-lg shadow-rose-300/40"
+          key={item}
+          onClick={() => setPage(item)}
+          className={`rounded-full bg-white px-4 py-3 text-xs font-semibold text-slate-900 shadow-xl shadow-slate-200 transition ${
+            page === item ? "bg-[#ff3b4f] text-white" : "hover:bg-slate-100"
+          }`}
         >
-          Cart
+          {item}
         </button>
-      </div>
+      ))}
+      <button
+        onClick={openCart}
+        className="rounded-full bg-[#ff3b4f] px-4 py-3 text-xs font-semibold text-white shadow-xl shadow-slate-200 transition hover:bg-rose-600"
+      >
+        Cart
+      </button>
     </div>
   );
 }
