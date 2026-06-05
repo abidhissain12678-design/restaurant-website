@@ -283,12 +283,10 @@ function RestaurantWebsite() {
         total={total}
         onCheckout={() => { setPage("Checkout"); closeCart(); }}
       />
-
-      <HamburgerMenu open={isMenuOpen} onClose={closeMenu} setPage={(pageName) => { setPage(pageName); closeMenu(); }} />
       <QuickViewModal item={selectedItem} onClose={closeQuickView} addToCart={addToCart} />
 
       <MobileNav page={page} setPage={handleNavClick} openCart={openCart} />
-      <HamburgerMenu open={isMenuOpen} onClose={closeMenu} setPage={handleNavClick} />
+      <HamburgerMenu open={isMenuOpen} onClose={closeMenu} setPage={(pageName) => { handleNavClick(pageName); closeMenu(); }} />
       <Footer setPage={handleNavClick} />
     </div>
   );
