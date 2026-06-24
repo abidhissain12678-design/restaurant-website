@@ -190,7 +190,7 @@ function RestaurantWebsite() {
       <header className="sticky top-0 z-50 border-b border-rose-200 bg-white/90 backdrop-blur-xl shadow-sm">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8 lg:py-4">
           <button onClick={() => setPage("Home")} className="flex items-center gap-3 rounded-3xl bg-white px-3 py-2 shadow-sm shadow-rose-100 transition hover:shadow-rose-200 sm:px-4">
-            <img src="https://kverpsdjvlefuidtkwyn.supabase.co/storage/v1/object/sign/restaurant-images/flafe%20logo.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtl eV82MTdlZGIxMy1hOTRlLTQyNTQtYmZjNy1iZmY5MmI5NzRiOTgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJyZXN0YXVyYW50LWltYWdlcy9mbGFmZSBsb2dvLmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODIyODU1MjIsImV4cCI6MTg0NTM1NzUyMn0.Pab6rb8AMohgXLmQe1rk6Vn9qi4DiaIovLEca0qI6CA" alt="Flafe Logo" className="h-11 w-11 rounded-3xl object-cover" />
+            <img src="https://kverpsdjvlefuidtkwyn.supabase.co/storage/v1/object/sign/restaurant-images/flafe%20logo.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV82MTdlZGIxMy1hOTRlLTQyNTQtYmZjNy1iZmY5MmI5NzRiOTgiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJyZXN0YXVyYW50LWltYWdlcy9mbGFmZSBsb2dvLmpwZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODIzMTk2MDAsImV4cCI6MTgxMzg1NTYwMH0.7sIvq_l0mN976Lnk2z2oh4beRhcdj3OfN9W1yp7Ce7Y" alt="Flafe Logo" className="h-11 w-11 rounded-3xl object-cover" />
             <div className="text-left leading-tight">
               <div className="text-base font-black text-slate-900">Flafe</div>
               <div className="text-[11px] uppercase tracking-[0.3em] text-slate-500">Restaurant</div>
